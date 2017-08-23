@@ -1,0 +1,141 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="headingLayout" parent="AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:weightSum">1</item>
+    </style>
+
+    <style name="drugTableRow" parent="AppTheme">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">7dp</item>
+        <item name="android:paddingBottom">5dp</item>
+    </style>
+
+    <style name="drugTable1stColumn" parent="AppTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="drugTable2ndColumn" parent="AppTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="drugTable3rdColumn" parent="AppTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">right</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="normalTxt" parent="AppTheme">
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="spacer" parent="AppTheme">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:background">@drawable/customborder</item>
+    </style>
+
+    <style name="Dialogs" parent="AppTheme">
+        <item name="android:textColor">#000000</item>
+    </style>
+
+    <style name="cityHead" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="headerText" parent="AppTheme">
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="drugDialogHeader" parent="AppTheme">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="drugDialogDesc" parent="AppTheme">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+    </style>
+
+    <style name="value" parent="AppTheme">
+        <item name="android:textStyle">italic</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_marginLeft">25dp</item>
+        <item name="android:layout_marginRight">25dp</item>
+    </style>
+
+    <style name="boughtFor" parent="AppTheme">
+
+    </style>
+
+    <style name="dialogTitle" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">23dp</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="weaponDealerBtn" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_margin">5dp</item>
+        <item name="android:background">@drawable/weapon_dealer_btn</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="weaponDealerImg" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentTop">true</item>
+        <item name="android:layout_alignParentLeft">true</item>
+    </style>
+
+    <style name="weaponDealerBtnTxt" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_marginTop">7dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+
+    <style name="weaponDealerHeadTxt" parent="AppTheme">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/colorTxtWhite</item>
+    </style>
+</resources>

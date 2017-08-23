@@ -1,0 +1,166 @@
+<resources>
+    <string name="app_name">Gangland Dealer</string>
+
+    <string name="placeholder">Placeholder</string>
+
+    <string name="zero">0</string>
+    <string name="welcomeString">You\'ve got a month to make as much cash as you can while staying one step ahead of police\, rival drug dealers and the loan shark who\'s loaned you some starting capital \n\n Can you do it\?</string>
+    <string name="secondPage">secondPage Text</string>
+    <string name="cash">Cash</string>
+    <string name="new_game">New Game</string>
+    <string name="debt">Debt</string>
+    <string name="daysDesc">Day</string>
+    <string name="currency">£</string>
+    <string name="divisor">/</string>
+    <string name="maxDrugs">100</string>
+    <string name="payDebt">Pay Debt</string>
+    <string name="move">Move</string>
+    <string name="drugs">Drugs</string>
+    <string name="buy">Buy</string>
+    <string name="sell">Sell</string>
+    <string name="cancel">Cancel</string>
+    <string name="buyError">I can\'t afford this</string>
+    <string name="cantSell">Nobody around here\'s going to buy this</string>
+    <string name="moveError">I\'m already here</string>
+    <string name="boughtFor">Bought for:</string>
+    <string name="value">Total Value:</string>
+    <string name="save">Save</string>
+    <string name="quit">Quit</string>
+    <string name="load_game">Load Game</string>
+    <string name="leave">Leave</string>
+
+    <!-- ============ END GAME ========== -->
+    <string name="finish">Finish</string>
+    <string name="endGameTxt1">Yay you\'ve not died!</string>
+    <string name="inDebt">As the loan shark\'s men batter down your door you can\'t help but wonder where you went wrong.</string>
+    <string name="score">Final Score</string>
+
+    <!-- ============= DRUGS =============  -->
+    <string name="drug1">Acid</string>
+    <string name="drug2">Cocaine</string>
+    <string name="drug3">Ecstacy</string>
+    <string name="drug4">Hashish</string>
+    <string name="drug5">Heroin</string>
+    <string name="drug6">Ketamine</string>
+    <string name="drug7">Opium</string>
+    <string name="drug8">Poppers</string>
+    <string name="drug9">Shrooms</string>
+    <string name="drug10">Speed</string>
+    <string name="drug11">Weed</string>
+
+    <string name="drug1Desc">Acid is a powerful hallucinogenic drug that alters your perception of the outside world.</string>
+    <string name="drug2Desc">Cocaine can make you feel on top of the world, very confident, alert and awake.</string>
+    <string name="drug3Desc">Clubbers take ecstasy to feel energised, happy, to stay awake and to dance for hours.</string>
+    <string name="drug4Desc">Hashish acts somewhat as a sedative, causing a mellow, relaxed feeling.</string>
+    <string name="drug5Desc">A small dose of heroin gives the user a feeling of warmth and well-being.</string>
+    <string name="drug6Desc">Reduces sensations in the body, giving you a floating or detached feeling as if the mind and body have been separated.</string>
+    <string name="drug7Desc">When smoked, Opium causes a short-term high that includes relaxation, pain relief, reduced anxiety and impaired alertness and coordination</string>
+    <string name="drug8Desc">Poppers were part of club culture from the 1970s disco scene to the 1980s, and the 1990s rave scene made their use popular.</string>
+    <string name="drug9Desc">Shrooms can cause colours, sounds, objects and even time to distort to the user.</string>
+    <string name="drug10Desc">Speed is a stimulant that can keep you awake for hours and jumping around like a nutter.</string>
+    <string name="drug11Desc">Cannabis is naturally occurring - it is made from the cannabis plant and causes a relaxed and generally happy high.</string>
+
+    <!-- ============= CITIES =============  -->
+    <string name="firstCity">NORTH TYNESIDE</string>
+    <string name="secondCity">SOUTH TYNESIDE</string>
+    <string name="thirdCity">SUNDERLAND</string>
+    <string name="fourthCity">GATESHEAD</string>
+    <string name="fifthCity">NEWCASTLE UPON TYNE</string>
+
+    <string-array name="cities">
+        <item>@string/firstCity</item>
+        <item>@string/secondCity</item>
+        <item>@string/thirdCity</item>
+        <item>@string/fourthCity</item>
+        <item>@string/fifthCity</item>
+    </string-array>
+
+    <!-- =========== LOAN SHARK TEXT ======= -->
+    <string name="loanShark">Loan Shark</string>
+    <string name="loanSharkTakeBtn">Take Loan</string>
+    <string name="loanSharkPayBtn">Pay Loan</string>
+    <string name="noMoneyForLoanShark">I better avoid him until I have some cash</string>
+    <string name="loanSharkDesc">The loan shark sits behind his desk with an almost imperceptible grin on his face.</string>
+    <string name="loanSharkPayDesc">The loan shark stands smoking a cigar whilst two large men stare you down.</string>
+
+    <!-- =========== BANK TEXT =========== -->
+    <string name="bank">Bank</string>
+    <string name="withdrawBank">Withdraw</string>
+    <string name="depositBank">Deposit</string>
+    <string name="noMoneyForBank">Their\'s not much use going to the bank with no money..</string>
+    <string name="withdrawMoneyBank">The security guards eye you up as you enter the bank</string>
+    <string name="depositMoneyBank">The cashier smiles at you as you walk up to the counter with an envelope full of money</string>
+
+    <!-- =========== WEAPONS TEXT ========= -->
+    <string name="guns">Weapon Dealer</string>
+    <string name="noMoneyForGuns">He won\'t be too happy if I show up with no money&#8230;</string>
+    <string name="noMoneyToBuyGuns">I can\'t afford this just now\, maybe I could come back later&#8230;</string>
+    <string name="weapon">Weapon:</string>
+    <string name="currentWpn">Curr. Weapon:</string>
+    <string name="currentCash">Curr. Cash:</string>
+
+    <string name="fists">Fists</string>
+    <string name="pistol">Pistol</string>
+    <string name="hunting_rifle">Hunting Rifle</string>
+    <string name="smg">SMG</string>
+    <string name="assault_rifle">Assault Rifle</string>
+
+    <string name="damage">Damage</string>
+    <string name="accuracy">Accuracy</string>
+    <string name="cost">Cost: </string>
+
+    <!-- ========== HOSPITAL TEXT ========= -->
+    <string name="hospital">Royal Hospital</string>
+    <string name="noNeedOfHospital">No point in going there when I\'m healthy..</string>
+
+    <!-- ========= EVENT TEXT =========== -->
+    <string name="event">Event: </string>
+
+    <string name="mugged">Mugging</string>
+    <string name="mugDesc">As you\'re walking through an alley a shady looking man approaches you and draws a knife. \n\nHe manages to steal £%1$s before %2$s getting away</string>
+    <string name="stabbing">stabbing you and</string>
+    <string name="knockOut">knocking you out and</string>
+
+    <string name="drugBoom">Drug Price Boom</string>
+    <string name="drugBoomDesc">There\'s a severe shortage of %1$s which has made the price skyrocket</string>
+    <string name="drugBustDesc">Cheap %1$s have flooded the market making %2$s worthless</string>
+
+    <string name="attackStart">As you walk around a corner you\'re confronted by a %1$s.</string>
+    <string name="run">Run</string>
+    <string name="fight">Fight</string>
+    <string name="escaped">You managed to lose him in a crowd</string>
+    <string name="ok">ok</string>
+
+    <string name="currentHealth">Health: </string>
+    <string name="enemyHealth">Enemy Health: </string>
+
+    <string name="policeDescription">The police officer hit\'s you with his baton, dealing %1$s damage&#8230;</string>
+    <string name="drugDealerDescription">The drug dealer attempts to stab you but narrowly misses&#8230;</string>
+    <string name="officerDescription">The Armed Officer shoots and hit\'s you square in the %1$s for %2$s damage&#8230;</string>
+
+    <string name="policeDescriptionMiss">The officer tries to attack you but narrowly misses&#8230;</string>
+    <string name="drugDealerDescriptionMiss">The drug dealer stabs you\, damaging you by %1$s&#8230;</string>
+    <string name="officerDescriptionMiss">As the officer shoots\, you hear a bullet whizz by your %1$s&#8230;</string>
+
+    <string name="policeKilledPlayer">As you fall to the floor\, you\'re quickly handcuffed and sent to jail</string>
+    <string name="drugDealerKilledPlayer">As the drug dealer stabs you again you feel yourself losing consciousness&#8230;</string>
+    <string name="officerKilledPlayer">You feel a dull thud in your %1$s and suddenly you fall to the ground in a heap&#8230;</string>
+
+    <string name="policeDead">The police officer takes a hard hit and falls to the ground&#8230;</string>
+    <string name="drugDealerDead">The dealer falls to the floor dead&#8230;</string>
+    <string name="officerDead">The officer takes a hit to the %1$s and passes out&#8230;</string>
+
+    <string-array name="runAwaySuccess">
+        <item>You run around a corner and hide in a shop, they run by without seeing you&#8230;</item>
+        <item>You duck into an alleyway\, quickly managing to lose your pursuer&#8230;</item>
+        <item>you blind the attacker then quickly escape&#8230;</item>
+    </string-array>
+
+    <string-array name="bodyParts">
+        <item>head</item>
+        <item>arm</item>
+        <item>leg</item>
+        <item>chest</item>
+    </string-array>
+
+</resources>
