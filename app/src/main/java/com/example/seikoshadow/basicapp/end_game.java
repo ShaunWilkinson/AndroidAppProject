@@ -1,10 +1,10 @@
 package com.example.seikoshadow.basicapp;
 
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class end_game extends AppCompatActivity {
@@ -40,7 +40,7 @@ public class end_game extends AppCompatActivity {
 
     }
 
-    public void quitGame() {
+    public void quitGame(View view) {
         Intent quit = new Intent(this, Menu.class);
         startActivity(quit);
     }

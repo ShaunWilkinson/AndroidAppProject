@@ -4,9 +4,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -45,6 +45,10 @@ import java.util.Random;
 //  todo got count of visible drugs, still need to be able to pick from just visible though as there's a bug where it can pick drugs which arent visible - Done
 
 public class GameView extends AppCompatActivity {
+    public static final String SAVE_FILE = "saveFile";
+    // Weapons
+    public int currentWeapon = 1; // hands = 1, pistol = 2, rifle = 3, smg = 4, assRifle = 5
+    public boolean[] enemyAliveOrDead = {true, true, true}; // true = alive
     int currentCashVal = 5000;
     int currentDebtVal = 5000;
     int currentBankVal = 0;
@@ -55,8 +59,7 @@ public class GameView extends AppCompatActivity {
     int maxDrugs = 100;
     int firstRun = 1;
     int runChance = 50; // percentage chance to run
-
-    public static final String SAVE_FILE = "saveFile";
+    int eventChance = 40; // percentage chance of event
     int selectedRow = 0;
     int maxDrugsPurchasableNum = 0;
     int inputDrugQuantity = 0;
@@ -74,34 +77,25 @@ public class GameView extends AppCompatActivity {
     int[] drugValues;
     int[] drugVisible;
     String depositOrWithdraw;
-
-    int eventChance = 1; // 10% chance, defined by 10 / eventchance
-
     // All lists containing average purchase value of each drug
-    List<Integer> drugPurchases1 = new ArrayList<Integer>();
-    List<Integer> drugPurchases2 = new ArrayList<Integer>();
-    List<Integer> drugPurchases3 = new ArrayList<Integer>();
-    List<Integer> drugPurchases4 = new ArrayList<Integer>();
-    List<Integer> drugPurchases5 = new ArrayList<Integer>();
-    List<Integer> drugPurchases6 = new ArrayList<Integer>();
-    List<Integer> drugPurchases7 = new ArrayList<Integer>();
-    List<Integer> drugPurchases8 = new ArrayList<Integer>();
-    List<Integer> drugPurchases9 = new ArrayList<Integer>();
-    List<Integer> drugPurchases10 = new ArrayList<Integer>();
-    List<Integer> drugPurchases11 = new ArrayList<Integer>();
-
-    // Weapons
-    public int currentWeapon = 1; // hands = 1, pistol = 2, rifle = 3, smg = 4, assRifle = 5
+    List<Integer> drugPurchases1 = new ArrayList<>();
+    List<Integer> drugPurchases2 = new ArrayList<>();
+    List<Integer> drugPurchases3 = new ArrayList<>();
+    List<Integer> drugPurchases4 = new ArrayList<>();
+    List<Integer> drugPurchases5 = new ArrayList<>();
+    List<Integer> drugPurchases6 = new ArrayList<>();
+    List<Integer> drugPurchases7 = new ArrayList<>();
+    List<Integer> drugPurchases8 = new ArrayList<>();
+    List<Integer> drugPurchases9 = new ArrayList<>();
+    List<Integer> drugPurchases10 = new ArrayList<>();
+    List<Integer> drugPurchases11 = new ArrayList<>();
     int[] weaponDmg = {30, 50, 60, 70, 80};
     int[] weaponAccuracy = {60, 70, 80, 90, 100};
     int[] weaponCost = {0, 1000, 5000, 10000, 20000};
     int selectedWpnVal = 0;
-
     // Enemies
     String[] enemyNames = {"Policeman", "Rival Drug Dealer", "Armed Officer"};
-    public boolean[] enemyAliveOrDead = {true, true, true}; // true = alive
     int[] enemiesHealth = {100, 150, 300};
-    int[] enemiesDefence = {15, 20, 25};
     int[] enemiesAttack = {20, 30, 40};
     int[] enemiesAccuracy = {60, 70, 80};
     int selectedEnemyId = 0;
@@ -178,8 +172,7 @@ public class GameView extends AppCompatActivity {
 
             ======================================== */
 
-        // Currently set to 40% chance of event
-        if (randomInt(1,10) <= 4) { //randomInt(1, 10) <= eventChance - FIX
+        if (randomInt(1, 100) <= eventChance) {
 
             // ======== setup the alert ============
             AlertDialog.Builder eventBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
@@ -319,9 +312,7 @@ public class GameView extends AppCompatActivity {
                 firstBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         eventDialog.dismiss();
-                        boolean triedToRun = false;
-
-                        battleHandler(triedToRun);
+                        battleHandler(false);
                     }
                 });
 
@@ -341,8 +332,7 @@ public class GameView extends AppCompatActivity {
                             });
                         } else {
                             eventDialog.dismiss();
-                            boolean triedToRun = true;
-                            battleHandler(triedToRun);
+                            battleHandler(true);
                         }
                     }
                 });
@@ -414,7 +404,6 @@ public class GameView extends AppCompatActivity {
             String chosenMsg = runAwayMessages[randomInt(0, runAwayMessages.length)];
 
             Toast.makeText(getApplicationContext(), chosenMsg, Toast.LENGTH_LONG).show();
-            String bodyPart = bodyParts[randomInt(0, bodyParts.length - 1)];
             return 1;
         }
 
@@ -422,8 +411,6 @@ public class GameView extends AppCompatActivity {
     }
 
     public void battleTurn(boolean triedToRun) {
-        boolean enemyDamaged;
-
         // Create the dialog
         AlertDialog.Builder eventBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
         final AlertDialog eventDialog = eventBuilder.create();
@@ -438,7 +425,7 @@ public class GameView extends AppCompatActivity {
             if(runHandler(eventDialog) == 1) {
                 return;
             } else {
-                enemyDamaged = playerAttack();
+                playerAttack();
             }
         }
 
@@ -599,22 +586,22 @@ public class GameView extends AppCompatActivity {
 
             switch (enemyNames[selectedEnemyId]) {
                 case "Policeman": {
-                    handleDeath(1, dialogDescription);
+                    handleDeath(dialogDescription);
                     break;
                 }
                 case "Rival Drug Dealer": {
                     dialogDescription.setText(getString(R.string.drugDealerKilledPlayer));
-                    handleDeath(2, dialogDescription);
+                    handleDeath(dialogDescription);
                     break;
                 }
                 case "Armed Officer": {
                     dialogDescription.setText(getString(R.string.officerKilledPlayer, bodyPart));
-                    handleDeath(3, dialogDescription);
+                    handleDeath(dialogDescription);
                     break;
                 }
                 case "default": {
                     dialogDescription.setText(getString(R.string.placeholder));
-                    handleDeath(999, dialogDescription);
+                    handleDeath(dialogDescription);
                     break;
                 }
             }
@@ -676,6 +663,8 @@ public class GameView extends AppCompatActivity {
         // 3 = player and armed officer dead
         // 999 = undefined draw
 
+        // TODO handle draw messages
+
         switch(typeOfDraw) {
             case 1: {
 
@@ -696,8 +685,7 @@ public class GameView extends AppCompatActivity {
     }
 
     public void handleWin(int typeOfWin, TextView dialogDescription) {
-        // TODO handle win
-        Log.d("myapp", "handleWin[" + String.valueOf(typeOfWin) + "] called");
+        // TODO handle win - Done
 
         // typeOfWin
         // 1 = player kills policeman
@@ -728,7 +716,7 @@ public class GameView extends AppCompatActivity {
         }
     }
 
-    public void handleDeath(int typeOfDeath, TextView dialogDescription) {
+    public void handleDeath(TextView dialogDescription) {
         // TODO handle Death
 
         // typeOfDeath
@@ -909,27 +897,37 @@ public class GameView extends AppCompatActivity {
         currentHealthVal = savePref.getInt("currentHealth", -1);
 
         // Process the drug quantities
-        // get string array of values
-        String[] drugQuantity = savePref.getString("drugQuantities", null).replace("[", "").replace("]", "").split(", ");
-        String[] drugValue = savePref.getString("drugValues", null).replace("[", "").replace("]", "").split(", ");
-        String[] drugVis = savePref.getString("drugVisible", null).replace("[", "").replace("]", "").split(", ");
-        String[] enemiesHealth = savePref.getString("enemiesHealth", null).replace("[", "").replace("]", "").split(", ");
-        String[] enemiesAliveOrDead = savePref.getString("enemiesAliveOrDead", null).replace("[", "").replace("]", "").split(", ");
+        try {
+            String[] drugQuantity = savePref.getString("drugQuantities", null).replace("[", "").replace("]", "").split(", ");
+            String[] drugValue = savePref.getString("drugValues", null).replace("[", "").replace("]", "").split(", ");
+            String[] drugVis = savePref.getString("drugVisible", null).replace("[", "").replace("]", "").split(", ");
 
-        drugQuantities = new int[drugQuantity.length];
-        drugValues = new int[drugQuantity.length];
-        drugVisible = new int[drugQuantity.length];
+            drugQuantities = new int[drugQuantity.length];
+            drugValues = new int[drugQuantity.length];
+            drugVisible = new int[drugQuantity.length];
 
-        for (int i = 0; i < drugQuantity.length; i++) {
-            drugQuantities[i] = Integer.parseInt(drugQuantity[i]);
-            drugValues[i] = Integer.parseInt(drugValue[i]);
-            drugVisible[i] = Integer.parseInt(drugVis[i]);
+            for (int i = 0; i < drugQuantity.length; i++) {
+                drugQuantities[i] = Integer.parseInt(drugQuantity[i]);
+                drugValues[i] = Integer.parseInt(drugValue[i]);
+                drugVisible[i] = Integer.parseInt(drugVis[i]);
+            }
+        } catch (NullPointerException e) {
+            Log.e("myapp", "failed to load drug information - NullPointerException");
         }
 
-        for (int i = 0; i < enemiesHealth.length; i++) {
-            enemiesHealth[i] = enemiesHealth[i];
-            enemyAliveOrDead[i] = Boolean.getBoolean(enemiesAliveOrDead[i]);
+        // Process enemy data
+        try {
+            String[] enemiesHealth = savePref.getString("enemiesHealth", null).replace("[", "").replace("]", "").split(", ");
+            String[] enemiesAliveOrDead = savePref.getString("enemiesAliveOrDead", null).replace("[", "").replace("]", "").split(", ");
+
+            for (int i = 0; i < enemiesHealth.length; i++) {
+                enemiesHealth[i] = enemiesHealth[i];
+                enemyAliveOrDead[i] = Boolean.getBoolean(enemiesAliveOrDead[i]);
+            }
+        } catch (NullPointerException e) {
+            Log.e("myapp", "failed to load enemy information - NullPointerException");
         }
+
     }
 
     // ===== HANDLE BACK BUTTON PRESS ======
@@ -998,8 +996,8 @@ public class GameView extends AppCompatActivity {
             // set default values
             damageValTxt.setText(String.valueOf(weaponDmg[0]));
             accuracyValTxt.setText(String.valueOf(weaponAccuracy[0]));
-            costValTxt.setText(getString(R.string.currency) + String.valueOf(weaponCost[0]));
-            cashValTxt.setText(getString(R.string.currency) + String.valueOf(currentCashVal));
+            costValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(weaponCost[0])));
+            cashValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(currentCashVal)));
             selectedWeapon.setText(getString(R.string.fists));
 
             wpnDealerGetCurrentWpn(dialogView);
@@ -1025,7 +1023,7 @@ public class GameView extends AppCompatActivity {
                 public void onClick(View v) {
                     damageValTxt.setText(String.valueOf(weaponDmg[1]));
                     accuracyValTxt.setText(String.valueOf(weaponAccuracy[1]));
-                    costValTxt.setText(getString(R.string.currency) + String.valueOf(weaponCost[1]));
+                    costValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(weaponCost[1])));
                     selectedWeapon.setText(getString(R.string.pistol));
 
                     wpnDealerGetCurrentWpn(dialogView);
@@ -1038,7 +1036,7 @@ public class GameView extends AppCompatActivity {
                 public void onClick(View v) {
                     damageValTxt.setText(String.valueOf(weaponDmg[2]));
                     accuracyValTxt.setText(String.valueOf(weaponAccuracy[2]));
-                    costValTxt.setText(getString(R.string.currency) + String.valueOf(weaponCost[2]));
+                    costValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(weaponCost[2])));
                     selectedWeapon.setText(getString(R.string.hunting_rifle));
 
                     wpnDealerGetCurrentWpn(dialogView);
@@ -1052,7 +1050,7 @@ public class GameView extends AppCompatActivity {
                 public void onClick(View v) {
                     damageValTxt.setText(String.valueOf(weaponDmg[3]));
                     accuracyValTxt.setText(String.valueOf(weaponAccuracy[3]));
-                    costValTxt.setText(getString(R.string.currency) + String.valueOf(weaponCost[3]));
+                    costValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(weaponCost[3])));
                     selectedWeapon.setText(getString(R.string.smg));
 
                     wpnDealerGetCurrentWpn(dialogView);
@@ -1065,7 +1063,7 @@ public class GameView extends AppCompatActivity {
                 public void onClick(View v) {
                     damageValTxt.setText(String.valueOf(weaponDmg[4]));
                     accuracyValTxt.setText(String.valueOf(weaponAccuracy[4]));
-                    costValTxt.setText(getString(R.string.currency) + String.valueOf(weaponCost[4]));
+                    costValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(weaponCost[4])));
                     selectedWeapon.setText(getString(R.string.assault_rifle));
 
                     wpnDealerGetCurrentWpn(dialogView);
@@ -1101,7 +1099,7 @@ public class GameView extends AppCompatActivity {
                             TextView currentCash = (TextView) findViewById(R.id.currentCashView);
 
                             currentCash.setText(String.valueOf(currentCashVal));
-                            cashValTxt.setText(getString(R.string.currency) + String.valueOf(currentCashVal));
+                            cashValTxt.setText(getString(R.string.currencyQuantity, String.valueOf(currentCashVal)));
 
                             switch (selectedWpnVal) {
                                 case 2:
@@ -1260,7 +1258,7 @@ public class GameView extends AppCompatActivity {
                 }
             });
             // Handle money but no bank
-        } else if ((currentCashVal > 0 && currentBankVal == 0) || depositOrWithdraw == "deposit") {
+        } else if ((currentCashVal > 0 && currentBankVal == 0) || depositOrWithdraw.equals("deposit")) {
             depositOrWithdraw = "";
 
             final TextView currentBankTxt = (TextView) findViewById(R.id.currentBankView);
@@ -1735,7 +1733,7 @@ public class GameView extends AppCompatActivity {
 
         switch (selectedRow) {
             case R.id.tableRow1:
-                dialogTitle = getString(R.string.drug1) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug1) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug1Desc));
                 if (!drugPurchases1.isEmpty()) {
@@ -1745,7 +1743,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow2:
-                dialogTitle = getString(R.string.drug2) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug2) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug2Desc));
                 if (!drugPurchases2.isEmpty()) {
@@ -1755,7 +1753,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow3:
-                dialogTitle = getString(R.string.drug3) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug3) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug3Desc));
                 if (!drugPurchases3.isEmpty()) {
@@ -1765,7 +1763,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow4:
-                dialogTitle = getString(R.string.drug4) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug4) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug4Desc));
                 if (!drugPurchases4.isEmpty()) {
@@ -1775,7 +1773,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow5:
-                dialogTitle = getString(R.string.drug5) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug5) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug5Desc));
                 if (!drugPurchases5.isEmpty()) {
@@ -1785,7 +1783,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow6:
-                dialogTitle = getString(R.string.drug6) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug6) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug6Desc));
                 if (!drugPurchases6.isEmpty()) {
@@ -1795,7 +1793,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow7:
-                dialogTitle = getString(R.string.drug7) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug7) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug7Desc));
                 if (!drugPurchases7.isEmpty()) {
@@ -1805,7 +1803,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow8:
-                dialogTitle = getString(R.string.drug8) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug8) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug8Desc));
                 if (!drugPurchases8.isEmpty()) {
@@ -1815,7 +1813,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow9:
-                dialogTitle = getString(R.string.drug9) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug9) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug9Desc));
                 if (!drugPurchases9.isEmpty()) {
@@ -1825,7 +1823,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow10:
-                dialogTitle = getString(R.string.drug10) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug10) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug10Desc));
                 if (!drugPurchases10.isEmpty()) {
@@ -1835,7 +1833,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow11:
-                dialogTitle = getString(R.string.drug11) + " - " + getString(R.string.currency) + String.valueOf(currentDrugVal);
+                dialogTitle = getString(R.string.drug11) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
                 currentDrugTitle.setText(dialogTitle);
                 currentDrugDescTxt.setText(getString(R.string.drug11Desc));
                 if (!drugPurchases11.isEmpty()) {
@@ -1937,9 +1935,9 @@ public class GameView extends AppCompatActivity {
                     inputDrugQuantity = Integer.parseInt(buySellQuantity.getText().toString());
                     int totalValue = currentDrugVal * inputDrugQuantity;
 
-                    value.setText(getString(R.string.value) + " " + String.valueOf(totalValue));
+                    value.setText(getString(R.string.totalValue, getString(R.string.value), String.valueOf(totalValue)));
                 } else {
-                    value.setText(getString(R.string.value) + " 0");
+                    value.setText(getString(R.string.totalValue, getString(R.string.value), "0"));
                 }
             }
 
@@ -2165,9 +2163,7 @@ public class GameView extends AppCompatActivity {
 
     public int randomInt(int min, int max) {
         Random randomNum = new Random();
-        int randomInt = randomNum.nextInt((max - min) + 1) + min;
-
-        return randomInt;
+        return randomNum.nextInt((max - min) + 1) + min;
     }
 
     public void setupAllVariables() {
@@ -2331,19 +2327,16 @@ public class GameView extends AppCompatActivity {
                 // todo balance drug prices
                 // if Random false
                 if (displayRow > 7) {
-                    // hide row
-                    if (row != null) {
-                        // make sure
-                        if (drugQuantities != null) {
-                            if (drugQuantities[i] == 0) {
-                                row.setVisibility(row.GONE);
-                                drugVisible[i] = 0;
-                            } else if (drugQuantities[i] > 0) {
-                                currentDrugCostTxt.setText("---");
-                            }
-                        } else {
-                            row.setVisibility(row.GONE);
+                    // make sure
+                    if (drugQuantities != null) {
+                        if (drugQuantities[i] == 0) {
+                            row.setVisibility(View.GONE);
+                            drugVisible[i] = 0;
+                        } else if (drugQuantities[i] > 0) {
+                            currentDrugCostTxt.setText("---");
                         }
+                    } else {
+                        row.setVisibility(View.GONE);
                     }
                 } else {
                     drugVisible[i] = 1;
@@ -2356,9 +2349,9 @@ public class GameView extends AppCompatActivity {
 
                 if (row != null) {
                     if (drugVisible[i] == 0) {
-                        row.setVisibility(row.GONE);
+                        row.setVisibility(View.GONE);
                     } else {
-                        row.setVisibility(row.VISIBLE);
+                        row.setVisibility(View.VISIBLE);
                     }
                 }
             }

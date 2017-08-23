@@ -10,44 +10,44 @@
     tools:context="com.example.seikoshadow.basicapp.end_game">
 
     <TextView
+        android:id="@+id/endGameTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/endGameTxt1"
-        android:id="@+id/endGameTxt"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:text="@string/endGameTxt1"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
         android:id="@+id/scoreValTxt"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_marginTop="27dp"
-        android:layout_below="@+id/scoreTxt"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/score"
+        android:layout_below="@+id/scoreTxt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
         android:id="@+id/scoreTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp" />
+        android:layout_marginTop="54dp"
+        android:text="@string/score"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button
-        android:text="Quit"
+        android:id="@+id/quitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="103dp"
-        android:id="@+id/quitBtn"
-        android:onClick="quitGame"/>
+        android:onClick="quitGame"
+        android:text="@string/quit" />
 
 </RelativeLayout>

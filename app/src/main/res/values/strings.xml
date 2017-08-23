@@ -1,3 +1,5 @@
+<!DOCTYPE resources [<!ENTITY currency "£">]>
+
 <resources>
     <string name="app_name">Gangland Dealer</string>
 
@@ -11,6 +13,7 @@
     <string name="debt">Debt</string>
     <string name="daysDesc">Day</string>
     <string name="currency">£</string>
+    <string name="currencyQuantity">&currency;%1$s</string>
     <string name="divisor">/</string>
     <string name="maxDrugs">100</string>
     <string name="payDebt">Pay Debt</string>
@@ -24,6 +27,7 @@
     <string name="moveError">I\'m already here</string>
     <string name="boughtFor">Bought for:</string>
     <string name="value">Total Value:</string>
+    <string name="totalValue">%1$s%2$s</string>
     <string name="save">Save</string>
     <string name="quit">Quit</string>
     <string name="load_game">Load Game</string>

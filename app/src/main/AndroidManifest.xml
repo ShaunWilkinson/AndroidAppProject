@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GameView" />
-        <activity android:name=".end_game"></activity>
+        <activity android:name=".end_game" />
     </application>
 
 </manifest>
