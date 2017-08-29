@@ -2,8 +2,10 @@ package com.example.seikoshadow.basicapp;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +13,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+// TODO change all calls to update text health using setHealth()
 
 // TODO complete descriptions of drugs in strings file - Done
 // todo Make pay debt button change depending on city - Done
@@ -43,6 +44,8 @@ import java.util.Random;
 // todo events
 // todo weapons and armour - Done
 //  todo got count of visible drugs, still need to be able to pick from just visible though as there's a bug where it can pick drugs which arent visible - Done
+// todo code up hospital properly
+// todo set all dialogs to use customDialog style
 
 public class GameView extends AppCompatActivity {
     public static final String SAVE_FILE = "saveFile";
@@ -53,13 +56,16 @@ public class GameView extends AppCompatActivity {
     int currentDebtVal = 5000;
     int currentBankVal = 0;
     int currentDayVal = 1;
+    int maxHealth = 100;
     int currentHealthVal = 100;
     int totalDaysVal = 30;
     int interestRate = 5;
     int maxDrugs = 100;
     int firstRun = 1;
     int runChance = 50; // percentage chance to run
-    int eventChance = 40; // percentage chance of event
+    int eventChance = 70; // percentage chance of event 40
+    int hospitalCost = 100; // Cost per point of health
+
     int selectedRow = 0;
     int maxDrugsPurchasableNum = 0;
     int inputDrugQuantity = 0;
@@ -76,7 +82,7 @@ public class GameView extends AppCompatActivity {
     int[] drugQuantities;
     int[] drugValues;
     int[] drugVisible;
-    String depositOrWithdraw;
+    String depositOrWithdraw = "";
     // All lists containing average purchase value of each drug
     List<Integer> drugPurchases1 = new ArrayList<>();
     List<Integer> drugPurchases2 = new ArrayList<>();
@@ -142,15 +148,17 @@ public class GameView extends AppCompatActivity {
         handleLoadOrMove();
 
         // If end game is reached
-        if (currentDayVal == totalDaysVal) {
+        if (currentDayVal >= totalDaysVal) {
             endGame();
         }
 
         setupAllVariables();
         varyDrugsVisible();
 
-        handleEvents();
-
+        // stop events if it's the first day
+        if (currentDayVal != 1) {
+            handleEvents();
+        }
     }
     // ======= END ==================
 
@@ -175,14 +183,16 @@ public class GameView extends AppCompatActivity {
         if (randomInt(1, 100) <= eventChance) {
 
             // ======== setup the alert ============
-            AlertDialog.Builder eventBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog eventDialog = eventBuilder.create();
-            View dialogView = View.inflate(this, R.layout.events, null);
+            final AlertDialog eventDialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.event))
+                    .create();
 
+            View dialogView = View.inflate(this, R.layout.events, null);
             eventDialog.setView(dialogView);
             eventDialog.setCancelable(false);
             eventDialog.setCanceledOnTouchOutside(false);
             eventDialog.show();
+            setDividerStyle(eventDialog);
 
             // Initialise dialog contents
             TextView currentCash = (TextView) findViewById(R.id.currentCashView);
@@ -195,13 +205,13 @@ public class GameView extends AppCompatActivity {
             dialogDescriptionTwo.setVisibility(View.GONE);
 
             // ====== EVent Handler ================
-            if (whichEventToRun >= 1 && whichEventToRun <= 10) {
+            if (whichEventToRun >= 1 && whichEventToRun <= 5) {
                 // ========== mug event =============
+                eventDialog.setTitle(getString(R.string.mugged));
 
                 int percentageLost = randomInt(0, 40);
                 int stolenAmountNum = (currentCashVal / 100) * percentageLost;
                 String stolenAmount = String.valueOf(stolenAmountNum);
-                Log.d("myapp", "Total: " + String.valueOf(stolenAmountNum) + "; percentageLost: " + String.valueOf(percentageLost));
 
                 String action;
                 int knockOutOrStabbed = randomInt(0, 1);
@@ -214,7 +224,6 @@ public class GameView extends AppCompatActivity {
                     currentHealthVal = currentHealthVal - randomInt(15, 30);
                 }
 
-                Log.d("myapp", "health: " + String.valueOf(currentHealth));
                 currentHealth.setText(String.valueOf(currentHealthVal));
 
                 dialogDescription.setText(getString(R.string.mugDesc, stolenAmount, action));
@@ -230,40 +239,54 @@ public class GameView extends AppCompatActivity {
                     }
                 });
                 // ========== end mug ===============
-            } else if (whichEventToRun >= 11 && whichEventToRun <= 90) {
+            } else if (whichEventToRun >= 6 && whichEventToRun <= 85) {
                 int boomOrBust = randomInt(0, 1);
                 // ========== Drugs worth more ===========
 
                 TableLayout drugTable = (TableLayout) findViewById(R.id.drugTable);
+                TableRow drugRow;
+                TextView drugName;
+                TextView drugValueTxt;
 
                 int drugCount = getCountOfVisibleDrugs();
 
                 int x = 0;
                 int whichDrug = 0;
 
+                // while a drugs no chosen loop
                 while (x == 0) {
+                    // choose a random drug
                     whichDrug = randomInt(1, drugCount);
+                    drugRow = (TableRow) drugTable.getChildAt(whichDrug);
+                    drugValueTxt = (TextView) drugRow.getChildAt(2);
 
-                    if (drugTable.getChildAt(whichDrug).getVisibility() == View.VISIBLE) {
+                    // if the drug is visible and the price isn't '---'
+                    if (drugTable.getChildAt(whichDrug).getVisibility() == View.VISIBLE && !drugValueTxt.getText().equals("---")) {
+                        // exit the loop
                         x = 1;
                     }
                 }
 
-                int priceChangePercentage = randomInt(30, 80);
+                drugRow = (TableRow) drugTable.getChildAt(whichDrug);
+                drugName = (TextView) drugRow.getChildAt(1);
+                drugValueTxt = (TextView) drugRow.getChildAt(2);
 
+                int priceChangePercentage = randomInt(30, 50);
 
-                TableRow drugRow = (TableRow) drugTable.getChildAt(whichDrug);
-                TextView drugName = (TextView) drugRow.getChildAt(1);
-                TextView drugValueTxt = (TextView) drugRow.getChildAt(2);
+                // if drug value doesn't equal ---
+                if (!drugValueTxt.getText().toString().equals("---")) {
+                    currentDrugVal = Integer.parseInt(drugValueTxt.getText().toString());
+                }
 
-                int currentDrugVal = Integer.parseInt(drugValueTxt.getText().toString());
                 int valueToAdd = (currentDrugVal / 100) * priceChangePercentage;
 
                 int newDrugValue;
 
                 if (boomOrBust == 0) {
+                    eventDialog.setTitle(getString(R.string.drugBoom));
                     newDrugValue = currentDrugVal + valueToAdd;
                 } else {
+                    eventDialog.setTitle(getString(R.string.drugBust));
                     newDrugValue = currentDrugVal - valueToAdd;
                 }
 
@@ -272,13 +295,21 @@ public class GameView extends AppCompatActivity {
                 if (boomOrBust == 0) {
                     drugName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreen));
                     drugValueTxt.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreen));
-                    dialogDescription.setText(getString(R.string.drugBoomDesc, drugName.getText().toString()));
                     dialogDescription.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorGreen));
+
+                    drugName.setTypeface(null, Typeface.BOLD);
+                    drugValueTxt.setTypeface(null, Typeface.BOLD);
+
+                    dialogDescription.setText(getString(R.string.drugBoomDesc, drugName.getText().toString()));
                 } else {
                     drugName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
                     drugValueTxt.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
-                    dialogDescription.setText(getString(R.string.drugBustDesc, drugName.getText().toString(), drugName.getText().toString()));
                     dialogDescription.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
+
+                    drugName.setTypeface(null, Typeface.BOLD);
+                    drugValueTxt.setTypeface(null, Typeface.BOLD);
+
+                    dialogDescription.setText(getString(R.string.drugBustDesc, drugName.getText().toString(), drugName.getText().toString()));
                 }
 
                 firstBtn.setVisibility(View.GONE);
@@ -291,20 +322,19 @@ public class GameView extends AppCompatActivity {
                 });
 
             // Fight
-            } else if (whichEventToRun >= 91 && whichEventToRun <= 100) {
+            } else if (whichEventToRun >= 86 && whichEventToRun <= 100) {
                 // Select easiest enemy who's alive
                 if (enemyAliveOrDead[0]) {
                     selectedEnemyId = 0;
-                    Log.d("myapp", "selected enemy 1");
                 } else if (enemyAliveOrDead[1]) {
                     selectedEnemyId = 1;
-                    Log.d("myapp", "selected enemy 2");
                 } else if (enemyAliveOrDead[2]) {
                     selectedEnemyId = 2;
                 } else {
                     return;
                 }
 
+                eventDialog.setTitle(getString(R.string.attackTitle));
                 dialogDescription.setText(getString(R.string.attackStart, enemyNames[selectedEnemyId]));
                 firstBtn.setText(getString(R.string.fight));
                 secondBtn.setText(getString(R.string.run));
@@ -312,28 +342,19 @@ public class GameView extends AppCompatActivity {
                 firstBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         eventDialog.dismiss();
-                        battleHandler(false);
+                        battleHandler(true);
                     }
                 });
 
                 secondBtn.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
-                        int gotAway = randomInt(1, 10);
-
-                        if (gotAway > 5) {
-                            dialogDescription.setText(getString(R.string.escaped));
-                            secondBtn.setVisibility(View.GONE);
-                            firstBtn.setText(R.string.ok);
-
-                            secondBtn.setOnClickListener(new View.OnClickListener() {
-                                public void onClick(View v) {
-                                    eventDialog.dismiss();
-                                }
-                            });
+                        // if run away success
+                        if (runHandler(eventDialog) == 1) {
+                            return;
                         } else {
                             eventDialog.dismiss();
                             battleHandler(true);
-                        }
+                    }
                     }
                 });
             }
@@ -344,84 +365,19 @@ public class GameView extends AppCompatActivity {
         //TODO implement run mechanic
 
         // Create the dialog
-        AlertDialog.Builder eventBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-        final AlertDialog eventDialog = eventBuilder.create();
-        final View dialogView = View.inflate(this, R.layout.battle, null);
+        final AlertDialog eventDialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.attackTitle))
+                .create();
 
+        final View dialogView = View.inflate(this, R.layout.battle, null);
         eventDialog.setView(dialogView);
         eventDialog.show();
         eventDialog.setCanceledOnTouchOutside(false);
         eventDialog.setCancelable(false);
+        setDividerStyle(eventDialog);
 
-        // Initialise dialog contents
-        TextView currentHealth = (TextView) dialogView.findViewById(R.id.currentHealthTxt);
-        TextView enemyHealthTxt = (TextView) dialogView.findViewById(R.id.currentEnemyHealthTxt);
-        TextView dialogDescription = (TextView) dialogView.findViewById(R.id.attackDescription);
-        Button firstBtn = (Button) dialogView.findViewById(R.id.button);
-        Button secondBtn = (Button) dialogView.findViewById(R.id.button2);
-
-        // Set values
-        firstBtn.setText(getString(R.string.fight));
-        secondBtn.setText(getString(R.string.run));
-
-        if (triedToRun) {
-            if(runHandler(eventDialog) == 1) {
-                return;
-            }
-        }
-
-        boolean playerDamaged = enemyAttack();
-
-        currentHealth.setText(String.valueOf(currentHealthVal));
-        enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
-
-        if (currentHealthVal == 0) {
-            setBattleDescription(playerDamaged, dialogDescription, 1);
-        } else {
-            setBattleDescription(playerDamaged, dialogDescription, 0);
-        }
-
-        firstBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                eventDialog.dismiss();
-                battleTurn(false);
-            }
-        });
-        secondBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                eventDialog.dismiss();
-                battleTurn(true);
-            }
-        });
-    }
-
-    public int runHandler(Dialog eventDialog) {
-        if(randomInt(1, 100) < runChance) {
-            // succesfully ran away
-            eventDialog.dismiss();
-
-            String[] runAwayMessages = getResources().getStringArray(R.array.runAwaySuccess);
-            String chosenMsg = runAwayMessages[randomInt(0, runAwayMessages.length)];
-
-            Toast.makeText(getApplicationContext(), chosenMsg, Toast.LENGTH_LONG).show();
-            return 1;
-        }
-
-        return 0;
-    }
-
-    public void battleTurn(boolean triedToRun) {
-        // Create the dialog
-        AlertDialog.Builder eventBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-        final AlertDialog eventDialog = eventBuilder.create();
-        final View dialogView = View.inflate(this, R.layout.battle, null);
-
-        eventDialog.setView(dialogView);
-        eventDialog.show();
-        eventDialog.setCanceledOnTouchOutside(false);
-        eventDialog.setCancelable(false);
-
-        if (triedToRun) {
+        // If player tries to run they miss an attack
+        if (!triedToRun) {
             if(runHandler(eventDialog) == 1) {
                 return;
             } else {
@@ -429,17 +385,23 @@ public class GameView extends AppCompatActivity {
             }
         }
 
-
-        boolean playerDamaged = enemyAttack();
-
         // Initialise dialog contents
-        final TextView currentHealth = (TextView) dialogView.findViewById(R.id.currentHealthTxt);
         TextView enemyHealthTxt = (TextView) dialogView.findViewById(R.id.currentEnemyHealthTxt);
-        TextView dialogDescription = (TextView) dialogView.findViewById(R.id.attackDescription);
+        final TextView currentHealth = (TextView) dialogView.findViewById(R.id.currentHealthTxt);
+        TextView enemyDialogDescription = (TextView) dialogView.findViewById(R.id.attackEnemyDescription);
         Button firstBtn = (Button) dialogView.findViewById(R.id.button);
         Button secondBtn = (Button) dialogView.findViewById(R.id.button2);
 
         // Set values
+        firstBtn.setText(getString(R.string.fight));
+        secondBtn.setText(getString(R.string.run));
+
+        boolean playerDamaged = enemyAttack();
+
+        setHealth();
+
+        // Set values
+        Log.d("myapp", String.valueOf(currentHealthVal));
         currentHealth.setText(String.valueOf(currentHealthVal));
         enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
@@ -451,7 +413,7 @@ public class GameView extends AppCompatActivity {
             currentHealth.setText(String.valueOf(currentHealthVal));
             enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
-            setBattleDescription(playerDamaged, dialogDescription, 3);
+            setBattleDescription(playerDamaged, enemyDialogDescription, 3);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
 
@@ -467,15 +429,19 @@ public class GameView extends AppCompatActivity {
             currentHealthVal = 0;
             currentHealth.setText(String.valueOf(currentHealthVal));
 
-            setBattleDescription(playerDamaged, dialogDescription, 1);
+            setBattleDescription(playerDamaged, enemyDialogDescription, 1);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
+
+            setHealth();
 
             secondBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     eventDialog.dismiss();
                     currentHealthVal = 100;
                     currentHealth.setText(String.valueOf(currentHealthVal));
+
+                    setHealth();
                 }
             });
 
@@ -484,11 +450,9 @@ public class GameView extends AppCompatActivity {
 
             enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
-            setBattleDescription(playerDamaged, dialogDescription, 2);
+            setBattleDescription(playerDamaged, enemyDialogDescription, 2);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
-
-            Log.d("myapp", String.valueOf(enemyAliveOrDead[selectedEnemyId]));
 
             secondBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -497,22 +461,48 @@ public class GameView extends AppCompatActivity {
             });
 
         } else {
-            setBattleDescription(playerDamaged, dialogDescription, 0);
+            setBattleDescription(playerDamaged, enemyDialogDescription, 0);
             firstBtn.setText(getString(R.string.fight));
             secondBtn.setText(getString(R.string.run));
 
             firstBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     eventDialog.dismiss();
-                    battleTurn(false);
+                    battleHandler(true);
                 }
             });
             secondBtn.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     eventDialog.dismiss();
-                    battleTurn(true);
+                    if (runHandler(eventDialog) == 1) {
+                        return;
+                    } else {
+                        battleHandler(false);
+                    }
                 }
             });
+        }
+    }
+
+    public int runHandler(Dialog eventDialog) {
+        eventDialog.dismiss();
+
+        setHealth();
+
+        if (randomInt(1, 100) < runChance) {
+            // succesfully ran away
+
+            String[] runAwaySuccessMessages = getResources().getStringArray(R.array.runAwaySuccess);
+            String chosenMsg = runAwaySuccessMessages[randomInt(0, runAwaySuccessMessages.length - 1)];
+
+            Toast.makeText(getApplicationContext(), chosenMsg, Toast.LENGTH_LONG).show();
+            return 1;
+        } else {
+            String[] runAwaySuccessMessages = getResources().getStringArray(R.array.runAwayFail);
+            String chosenMsg = runAwaySuccessMessages[randomInt(0, runAwaySuccessMessages.length - 1)];
+
+            Toast.makeText(getApplicationContext(), chosenMsg, Toast.LENGTH_LONG).show();
+            return 0;
         }
     }
 
@@ -633,7 +623,6 @@ public class GameView extends AppCompatActivity {
             switch (enemyNames[selectedEnemyId]) {
                 case "Policeman": {
                     dialogDescription.setText(getString(R.string.policeDead));
-                    Log.d("myapp", "police Dead");
                     handleDraw(1, dialogDescription);
                     break;
                 }
@@ -805,8 +794,10 @@ public class GameView extends AppCompatActivity {
                 extras.putInt("debt", currentDebtVal);
 
                 intent.putExtras(extras);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -869,7 +860,11 @@ public class GameView extends AppCompatActivity {
 
     public void quitGame() {
         Intent quit = new Intent(this, Menu.class);
+        quit.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
         startActivity(quit);
+
+        finish();
     }
 
     public void loadGame() {
@@ -934,14 +929,15 @@ public class GameView extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Create a new alert
-        final AlertDialog.Builder saveOrQuitBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-        final AlertDialog dialog = saveOrQuitBuilder.create();
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(getString(R.string.buyOrSell))
+                .create();
 
         // use drug_dialog layout for dialog contents
         final View saveOrQuitDial = View.inflate(this, R.layout.buy_or_sell_dialog, null);
-        LinearLayout saveOrQuitLayout = (LinearLayout) saveOrQuitDial.findViewById(R.id.buySellDialogLayout);
         dialog.setView(saveOrQuitDial);
 
+        LinearLayout saveOrQuitLayout = (LinearLayout) saveOrQuitDial.findViewById(R.id.buySellDialogLayout);
         final Button save = (Button) saveOrQuitDial.findViewById(R.id.buyOptionBtn);
         Button quit = (Button) saveOrQuitLayout.findViewById(R.id.sellOptionBtn);
 
@@ -949,6 +945,7 @@ public class GameView extends AppCompatActivity {
         quit.setText(getString(R.string.quit));
 
         dialog.show();
+        setDividerStyle(dialog);
 
         save.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -971,12 +968,13 @@ public class GameView extends AppCompatActivity {
             // If no money show error message
             Toast.makeText(getApplicationContext(), getString(R.string.noMoneyForGuns), Toast.LENGTH_LONG).show();
         } else {
-            // create weapon dealer dialog
-            AlertDialog.Builder weaponDealerBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog weaponDealerDialog = weaponDealerBuilder.create();
             final View dialogView = View.inflate(this, R.layout.weapon_dealer, null);
-            weaponDealerDialog.setView(dialogView);
+            final AlertDialog weaponDealerDialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.guns))
+                    .setView(dialogView)
+                    .create();
             weaponDealerDialog.show();
+            setDividerStyle(weaponDealerDialog);
 
             final TextView costValTxt = (TextView) dialogView.findViewById(R.id.costValTxt);
             final TextView cashValTxt = (TextView) dialogView.findViewById(R.id.currentCashTxt);
@@ -1221,21 +1219,21 @@ public class GameView extends AppCompatActivity {
             final TextView currentBankTxt = (TextView) findViewById(R.id.currentBankView);
             final TextView currentCashTxt = (TextView) findViewById(R.id.currentCashView);
 
-            AlertDialog.Builder withdrawMoneyBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog withdrawMoneyDialog = withdrawMoneyBuilder.create();
             View dialogView = View.inflate(this, R.layout.drug_dialog, null);
+            final AlertDialog withdrawMoneyDialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.bank))
+                    .setView(dialogView)
+                    .create();
 
-            withdrawMoneyDialog.setView(dialogView);
             withdrawMoneyDialog.show();
+            setDividerStyle(withdrawMoneyDialog);
 
             // Initialise dialog contents
-            TextView dialogTitle = (TextView) dialogView.findViewById(R.id.drugHeader);
-            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.drugDescription);
-            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.drugDialogField);
+            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.dialogDescription);
+            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.dialogEditText);
             Button dialogButton = (Button) dialogView.findViewById(R.id.buyBtn);
 
-            dialogTitle.setText(getString(R.string.bank));
-            dialogTitle.setGravity(Gravity.CENTER);
+            withdrawMoneyDialog.setTitle(getString(R.string.bank));
             dialogDescription.setText(getString(R.string.withdrawMoneyBank));
             dialogQuantity.setText(String.valueOf(currentBankVal));
             dialogButton.setText(getString(R.string.withdrawBank));
@@ -1264,20 +1262,19 @@ public class GameView extends AppCompatActivity {
             final TextView currentBankTxt = (TextView) findViewById(R.id.currentBankView);
             final TextView currentCashTxt = (TextView) findViewById(R.id.currentCashView);
 
-            AlertDialog.Builder depositMoneyBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog depositMoneyDialog = depositMoneyBuilder.create();
             View dialogView = View.inflate(this, R.layout.drug_dialog, null);
+            final AlertDialog depositMoneyDialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.bank))
+                    .setView(dialogView)
+                    .create();
 
-            depositMoneyDialog.setView(dialogView);
             depositMoneyDialog.show();
+            setDividerStyle(depositMoneyDialog);
 
             // Initialise dialog contents
-            TextView dialogTitle = (TextView) dialogView.findViewById(R.id.drugHeader);
-            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.drugDescription);
-            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.drugDialogField);
+            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.dialogDescription);
+            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.dialogEditText);
             Button dialogButton = (Button) dialogView.findViewById(R.id.buyBtn);
-
-            dialogTitle.setText(getString(R.string.bank));
 
             dialogDescription.setText(getString(R.string.depositMoneyBank));
             dialogQuantity.setText(String.valueOf(currentCashVal));
@@ -1301,15 +1298,13 @@ public class GameView extends AppCompatActivity {
                 }
             });
         } else if (currentCashVal > 0 && currentBankVal > 0){
-            // Create a new alert
-            final AlertDialog.Builder depositOrWithdrawBankBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog dialog = depositOrWithdrawBankBuilder.create();
-
-            // use drug_dialog layout for dialog contents
             final View buyOrSellDial = View.inflate(this, R.layout.buy_or_sell_dialog, null);
-            LinearLayout buyOrSellDialogLayout = (LinearLayout) buyOrSellDial.findViewById(R.id.buySellDialogLayout);
-            dialog.setView(buyOrSellDial);
+            final AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.bank))
+                    .setView(buyOrSellDial)
+                    .create();
 
+            LinearLayout buyOrSellDialogLayout = (LinearLayout) buyOrSellDial.findViewById(R.id.buySellDialogLayout);
             final Button deposit = (Button) buyOrSellDial.findViewById(R.id.buyOptionBtn);
             Button withdraw = (Button) buyOrSellDialogLayout.findViewById(R.id.sellOptionBtn);
 
@@ -1317,6 +1312,7 @@ public class GameView extends AppCompatActivity {
             withdraw.setText(getString(R.string.withdrawBank));
 
             dialog.show();
+            setDividerStyle(dialog);
 
             deposit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -1352,20 +1348,20 @@ public class GameView extends AppCompatActivity {
 
             // If user doesn't have a loan
         } else if (currentDebtVal == 0) {
-            AlertDialog.Builder takeDebtBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog takeDebtDialog = takeDebtBuilder.create();
             View dialogView = View.inflate(this, R.layout.drug_dialog, null);
+            final AlertDialog takeDebtDialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.loanShark))
+                    .setView(dialogView)
+                    .create();
 
-            takeDebtDialog.setView(dialogView);
             takeDebtDialog.show();
+            setDividerStyle(takeDebtDialog);
 
             // Initialise dialog contents
-            final TextView drugHeader = (TextView) dialogView.findViewById(R.id.drugHeader);
-            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.drugDescription);
-            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.drugDialogField);
+            TextView dialogDescription = (TextView) dialogView.findViewById(R.id.dialogDescription);
+            final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.dialogEditText);
             Button dialogButton = (Button) dialogView.findViewById(R.id.buyBtn);
 
-            drugHeader.setText(getString(R.string.loanShark));
             dialogButton.setText(getString(R.string.loanSharkTakeBtn));
             dialogDescription.setText(getString(R.string.loanSharkDesc));
 
@@ -1397,21 +1393,20 @@ public class GameView extends AppCompatActivity {
         } else {
             if (currentDebtVal > 0) {
                 // Setup pay loan
-                AlertDialog.Builder payDebtBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-                final AlertDialog payDebtDialog = payDebtBuilder.create();
                 View dialogView = View.inflate(this, R.layout.drug_dialog, null);
-
-                payDebtDialog.setView(dialogView);
+                final AlertDialog payDebtDialog = new AlertDialog.Builder(this)
+                        .setTitle(getString(R.string.loanShark))
+                        .setView(dialogView)
+                        .create();
                 payDebtDialog.show();
+                setDividerStyle(payDebtDialog);
 
                 // Initialise dialog contents
-                final TextView drugHeader = (TextView) dialogView.findViewById(R.id.drugHeader);
-                TextView dialogDescription = (TextView) dialogView.findViewById(R.id.drugDescription);
-                final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.drugDialogField);
+                TextView dialogDescription = (TextView) dialogView.findViewById(R.id.dialogDescription);
+                final EditText dialogQuantity = (EditText) dialogView.findViewById(R.id.dialogEditText);
                 final Button dialogButton = (Button) dialogView.findViewById(R.id.buyBtn);
 
                 // Handle setting up the pay dialog
-                drugHeader.setText(getString(R.string.loanShark));
                 dialogButton.setText(getString(R.string.loanSharkPayBtn));
                 dialogDescription.setText(getString(R.string.loanSharkPayDesc));
 
@@ -1462,19 +1457,6 @@ public class GameView extends AppCompatActivity {
         }
     }
 
-    private void hospitalHandler() {
-        if (currentHealthVal != 100) {
-            AlertDialog.Builder payDebtBuilder = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-            final AlertDialog payDebtDialog = payDebtBuilder.create();
-            View dialogView = View.inflate(this, R.layout.drug_dialog, null);
-
-            payDebtDialog.setView(dialogView);
-            payDebtDialog.show();
-        } else {
-            Toast.makeText(getApplicationContext(), getString(R.string.noNeedOfHospital), Toast.LENGTH_LONG).show();
-        }
-    }
-
     // ======= HANDLE ACTIVITY BUTTON CLICK ============
     public void activityBtn(final View view) {
         final Button actionBtn = (Button) findViewById(R.id.activityBtn);
@@ -1495,6 +1477,17 @@ public class GameView extends AppCompatActivity {
         // ========== HANDLE HOSPITAL ==========
         else if (actionBtnTxt.equals(getString(R.string.hospital))) {
             hospitalHandler();
+        }
+    }
+
+    private void hospitalHandler() {
+        if (currentHealthVal != 100) {
+
+            hospitalDialog dialog = new hospitalDialog(this, R.style.Theme_AppTheme);
+            dialog.handleDialog();
+
+        } else {
+            Toast.makeText(getApplicationContext(), getString(R.string.noNeedOfHospital), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1554,17 +1547,23 @@ public class GameView extends AppCompatActivity {
     }
 
     // On click of move button
-    public void moveBtnClick(View view) {
+    /*public void moveBtnClick(View view) {
         // TODO stop able to select current city
 
-
         //Create dialog for choosing location to move to
-        AlertDialog.Builder moveDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
+        AlertDialog.Builder moveDialog = new AlertDialog.Builder(this);
         AlertDialog dialog = moveDialog.create();
         View dialogView = View.inflate(this, R.layout.move, null);
 
         dialog.setView(dialogView);
         dialog.show();
+    }*/
+
+    // TESTING
+    public void moveBtnClick(View view) {
+        FragmentManager fm = getFragmentManager();
+        CustomDialog dialogFragment = new CustomDialog();
+        dialogFragment.show(fm, "Fragment");
     }
 
     // On click of city selection button
@@ -1643,7 +1642,6 @@ public class GameView extends AppCompatActivity {
         drugQuantities = new int[drugTableRowCount];
 
         //Get current quantities
-
         for (int i = 0; i < drugTableRowCount; i++) {
             View drugTableRow = drugTable.getChildAt(i);
             if (drugTableRow instanceof TableRow) {
@@ -1684,8 +1682,11 @@ public class GameView extends AppCompatActivity {
 
         move.putExtras(extras);
 
+
+        move.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         // Start the main activity
         startActivity(move);
+        finish();
     }
 
     public void onDrugRowClick(final View view) {
@@ -1703,38 +1704,29 @@ public class GameView extends AppCompatActivity {
             return;
         }
 
-        // Create a new alert
-        final AlertDialog.Builder drugBuySellDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialogs));
-        final AlertDialog dialog = drugBuySellDialog.create();
-
         // use drug_dialog layout for dialog contents
         final View v = View.inflate(this, R.layout.drug_dialog, null);
-        dialog.setView(v);
-
+        // Create a new alert
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(v)
+                .create();
 
         currentCashVal = Integer.parseInt(cashValue.getText().toString());
-
-        // Get amount of drugs held of current type
         totalCurrentDrugHeldVal = Integer.parseInt(currentTableRowQuantity.getText().toString());
-
 
         // Define the linearlayout of the drug dialog
         LinearLayout drugDialogContents = (LinearLayout) v.findViewById(R.id.drugDialogContents);
-        TextView currentDrugTitle = (TextView) drugDialogContents.findViewById(R.id.drugHeader);
-        TextView currentDrugDescTxt = (TextView) drugDialogContents.findViewById(R.id.drugDescription);
+        TextView currentDrugDescTxt = (TextView) drugDialogContents.findViewById(R.id.dialogDescription);
         TextView buyValueTxt = (TextView) drugDialogContents.findViewById(R.id.buyValueTxt);
 
         TextView currentTableRowValue = (TextView) currentTableRow.getChildAt(2);
         currentDrugVal = Integer.parseInt(currentTableRowValue.getText().toString());
 
-        String dialogTitle;
         String dialogTxt;
-
 
         switch (selectedRow) {
             case R.id.tableRow1:
-                dialogTitle = getString(R.string.drug1) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug1) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug1Desc));
                 if (!drugPurchases1.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases1));
@@ -1743,8 +1735,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow2:
-                dialogTitle = getString(R.string.drug2) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug2) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug2Desc));
                 if (!drugPurchases2.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases2));
@@ -1753,8 +1744,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow3:
-                dialogTitle = getString(R.string.drug3) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug3) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug3Desc));
                 if (!drugPurchases3.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases3));
@@ -1763,8 +1753,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow4:
-                dialogTitle = getString(R.string.drug4) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug4) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug4Desc));
                 if (!drugPurchases4.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases4));
@@ -1773,8 +1762,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow5:
-                dialogTitle = getString(R.string.drug5) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug5) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug5Desc));
                 if (!drugPurchases5.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases5));
@@ -1783,8 +1771,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow6:
-                dialogTitle = getString(R.string.drug6) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug6) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug6Desc));
                 if (!drugPurchases6.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases6));
@@ -1793,8 +1780,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow7:
-                dialogTitle = getString(R.string.drug7) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug7) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug7Desc));
                 if (!drugPurchases7.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases7));
@@ -1803,8 +1789,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow8:
-                dialogTitle = getString(R.string.drug8) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug8) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug8Desc));
                 if (!drugPurchases8.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases8));
@@ -1813,8 +1798,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow9:
-                dialogTitle = getString(R.string.drug9) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug9) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug9Desc));
                 if (!drugPurchases9.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases9));
@@ -1823,8 +1807,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow10:
-                dialogTitle = getString(R.string.drug10) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug10) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug10Desc));
                 if (!drugPurchases10.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases10));
@@ -1833,8 +1816,7 @@ public class GameView extends AppCompatActivity {
                 }
                 break;
             case R.id.tableRow11:
-                dialogTitle = getString(R.string.drug11) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal));
-                currentDrugTitle.setText(dialogTitle);
+                dialog.setTitle(getString(R.string.drug11) + " - " + getString(R.string.currencyQuantity, String.valueOf(currentDrugVal)));
                 currentDrugDescTxt.setText(getString(R.string.drug11Desc));
                 if (!drugPurchases11.isEmpty()) {
                     dialogTxt = getString(R.string.boughtFor) + " " + String.valueOf(averageArray(drugPurchases11));
@@ -1848,10 +1830,10 @@ public class GameView extends AppCompatActivity {
         maxDrugsPurchasableNum = currentCashVal / currentDrugVal;
 
         // Define edittext then set value of maximum drugs
-        final EditText buySellQuantity = (EditText) v.findViewById(R.id.drugDialogField);
+        final EditText buySellQuantity = (EditText) v.findViewById(R.id.dialogEditText);
 
         // If drugs held but no money
-        if (totalCurrentDrugHeldVal > 0 && maxDrugsPurchasableNum == 0) {
+        if (totalCurrentDrugHeldVal > 0 && maxDrugsPurchasableNum == 0 || totalItemsHeld == maxDrugs && totalCurrentDrugHeldVal > 0) {
             buySellQuantity.setText(String.valueOf(totalCurrentDrugHeldVal));
             confirmButtonTxt = getString(R.string.sell);
         }
@@ -1867,6 +1849,7 @@ public class GameView extends AppCompatActivity {
             LinearLayout buyOrSellDialogLayout = (LinearLayout) buyOrSellDial.findViewById(R.id.buySellDialogLayout);
             dialog.setView(buyOrSellDial);
 
+            dialog.setTitle(getString(R.string.buyOrSell));
             final Button buy = (Button) buyOrSellDial.findViewById(R.id.buyOptionBtn);
             Button sell = (Button) buyOrSellDialogLayout.findViewById(R.id.sellOptionBtn);
 
@@ -1906,6 +1889,7 @@ public class GameView extends AppCompatActivity {
         }
 
         dialog.show();
+        setDividerStyle(dialog);
 
         // Confirm logic
         final Button buyButton = (Button) v.findViewById(R.id.buyBtn);
@@ -1959,7 +1943,7 @@ public class GameView extends AppCompatActivity {
                 alreadyBoughtOrSold = false;
 
                 //LinearLayout drugDialogContents = (LinearLayout) v.findViewById(R.id.drugDialogContents);
-                EditText buySellQuantity = (EditText) dialog.findViewById(R.id.drugDialogField);
+                EditText buySellQuantity = (EditText) dialog.findViewById(R.id.dialogEditText);
                 TextView currentCashTxt = (TextView) findViewById(R.id.currentCashView);
                 TextView currentDrugsHeld = (TextView) findViewById(R.id.currentDrugQuantityView);
 
@@ -2152,6 +2136,19 @@ public class GameView extends AppCompatActivity {
         });
     }
 
+    public void setHealth() {
+        ImageView healthIcon = (ImageView) findViewById(R.id.imageView5);
+        TextView currentHealthTxt = (TextView) findViewById(R.id.currentHealthValue);
+
+        currentHealthTxt.setText(String.valueOf(currentHealthVal));
+
+        if (currentHealthVal >= 50) {
+            healthIcon.setBackgroundResource(R.drawable.hearticon1);
+        } else {
+            healthIcon.setBackgroundResource(R.drawable.hearticon2);
+        }
+    }
+
     public int averageArray(List<Integer> drugPurchaseArray) {
         int sum = 0;
         for (int i = 0; i < drugPurchaseArray.size(); i++) {
@@ -2278,15 +2275,10 @@ public class GameView extends AppCompatActivity {
         }
 
         // HANDLE SETUP FOR WEAPONS AND ARMOUR
-        ImageView healthIcon = (ImageView) findViewById(R.id.imageView5);
         TextView currentHealthValTxt = (TextView) findViewById(R.id.currentHealthValue);
         ImageView weaponImg = (ImageView) findViewById(R.id.weapon);
 
-        if (currentHealthVal >= 50) {
-            healthIcon.setBackgroundResource(R.drawable.hearticon1);
-        } else {
-            healthIcon.setBackgroundResource(R.drawable.hearticon2);
-        }
+        setHealth();
 
         currentHealthValTxt.setText(String.valueOf(currentHealthVal));
 
@@ -2305,6 +2297,14 @@ public class GameView extends AppCompatActivity {
                 weaponImg.setBackgroundResource(R.drawable.gun_assault_rifle);
                 break;
         }
+    }
+
+    public void setDividerStyle(Dialog dialog) {
+        // Divider Styling
+        int titleDividerId = getResources().getIdentifier("titleDivider", "id", "android");
+        View titleDivider = dialog.findViewById(titleDividerId);
+        if (titleDivider != null)
+            titleDivider.setBackgroundColor(getResources().getColor(R.color.colorAccent));
     }
 
     public void varyDrugsVisible() {

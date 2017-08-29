@@ -6,4 +6,6 @@
     <color name="colorGreen">#0c9600</color>
     <color name="colorRed">#860007</color>
     <color name="colorTxtWhite">#ffffff</color>
+
+    <color name="dialogBackground">#424242</color>
 </resources>

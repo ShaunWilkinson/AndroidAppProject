@@ -1,65 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:text="@string/currentHealth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/textView17"
-            android:layout_marginRight="10dp"/>
-
-        <TextView
-            android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/currentHealthTxt" />
+            android:layout_marginRight="10dp"
+            android:text="@string/currentHealth"/>
 
         <TextView
-            android:text="@string/enemyHealth"
+            android:id="@+id/currentHealthTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="0"/>
+
+        <TextView
             android:id="@+id/textView20"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="10dp"/>
-
-        <TextView
-            android:text="0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="10dp"
+            android:text="@string/enemyHealth"/>
+
+        <TextView
             android:id="@+id/currentEnemyHealthTxt"
-            android:layout_weight="1" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="0"/>
     </LinearLayout>
 
     <TextView
-        android:text="description"
+        android:id="@+id/playerAttackDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/attackEnemyDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/attackDescription" />
+        android:text="description"/>
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
 
         <Button
+            android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button" />
+            android:text="New Button"/>
 
         <Button
+            android:id="@+id/button2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Button"
-            android:id="@+id/button2" />
+            android:text="New Button"/>
     </LinearLayout>
 </LinearLayout>

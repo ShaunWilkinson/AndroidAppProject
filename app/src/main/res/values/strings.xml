@@ -21,6 +21,7 @@
     <string name="drugs">Drugs</string>
     <string name="buy">Buy</string>
     <string name="sell">Sell</string>
+    <string name="buyOrSell">Buy or Sell</string>
     <string name="cancel">Cancel</string>
     <string name="buyError">I can\'t afford this</string>
     <string name="cantSell">Nobody around here\'s going to buy this</string>
@@ -91,7 +92,7 @@
     <string name="bank">Bank</string>
     <string name="withdrawBank">Withdraw</string>
     <string name="depositBank">Deposit</string>
-    <string name="noMoneyForBank">Their\'s not much use going to the bank with no money..</string>
+    <string name="noMoneyForBank">Their\'s not much use going to the bank with no money&#8230;</string>
     <string name="withdrawMoneyBank">The security guards eye you up as you enter the bank</string>
     <string name="depositMoneyBank">The cashier smiles at you as you walk up to the counter with an envelope full of money</string>
 
@@ -115,7 +116,10 @@
 
     <!-- ========== HOSPITAL TEXT ========= -->
     <string name="hospital">Royal Hospital</string>
-    <string name="noNeedOfHospital">No point in going there when I\'m healthy..</string>
+    <string name="hospitalTitle">The Sunderland Royal Hospital</string>
+    <string name="noNeedOfHospital">No point in going there when I\'m healthy&#8230;</string>
+
+    <string name="hospitalDescription">Time seems to pass slowly as you wait to be seen by the doctor&#8230;</string>
 
     <!-- ========= EVENT TEXT =========== -->
     <string name="event">Event: </string>
@@ -125,10 +129,12 @@
     <string name="stabbing">stabbing you and</string>
     <string name="knockOut">knocking you out and</string>
 
-    <string name="drugBoom">Drug Price Boom</string>
+    <string name="drugBoom">Price Boom</string>
     <string name="drugBoomDesc">There\'s a severe shortage of %1$s which has made the price skyrocket</string>
-    <string name="drugBustDesc">Cheap %1$s have flooded the market making %2$s worthless</string>
+    <string name="drugBust">Price Bust</string>
+    <string name="drugBustDesc">Cheap %1$s has flooded the market making %2$s worthless</string>
 
+    <string name="attackTitle">Attacked</string>
     <string name="attackStart">As you walk around a corner you\'re confronted by a %1$s.</string>
     <string name="run">Run</string>
     <string name="fight">Fight</string>
@@ -158,6 +164,12 @@
         <item>You run around a corner and hide in a shop, they run by without seeing you&#8230;</item>
         <item>You duck into an alleyway\, quickly managing to lose your pursuer&#8230;</item>
         <item>you blind the attacker then quickly escape&#8230;</item>
+    </string-array>
+
+    <string-array name="runAwayFail">
+        <item>You try to run away but you\'re quickly grabbed&#8230;</item>
+        <item>As you start to run you trip over&#8230;</item>
+        <item>You trip and fall over&#8230;</item>
     </string-array>
 
     <string-array name="bodyParts">

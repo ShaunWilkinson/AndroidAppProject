@@ -1,78 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content" android:gravity="center">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
 
-
-    <TextView
-        android:text="@string/guns"
-        android:id="@+id/weaponDealerTitle"
-        android:layout_alignRight="@+id/btn2"
-        android:layout_alignEnd="@+id/btn2"
-        android:layout_alignLeft="@+id/btn1"
-        android:layout_alignStart="@+id/btn1"
-        style="@style/dialogTitle"/>
 
     <LinearLayout
-        style="@style/weaponDealerBtn"
         android:id="@+id/btn1"
+        style="@style/weaponDealerBtn"
         android:layout_below="@+id/weaponDealerTitle">
 
         <ImageView
-            style="@style/weaponDealerImg"
             android:id="@+id/imageView"
+            style="@style/weaponDealerImg"
             android:background="@drawable/gun_pistol" />
 
         <TextView
+            android:id="@+id/weaponTxt1"
             style="@style/weaponDealerBtnTxt"
-            android:text="@string/pistol"
-            android:id="@+id/weaponTxt1"/>
+            android:text="@string/pistol"/>
     </LinearLayout>
 
     <LinearLayout
-        style="@style/weaponDealerBtn"
         android:id="@+id/btn2"
+        style="@style/weaponDealerBtn"
         android:layout_below="@+id/weaponDealerTitle"
-        android:layout_toRightOf="@+id/btn1"
-        android:layout_toEndOf="@+id/btn1">
+        android:layout_toEndOf="@+id/btn1"
+        android:layout_toRightOf="@+id/btn1">
 
         <ImageView
-            style="@style/weaponDealerImg"
             android:id="@+id/imageView2"
+            style="@style/weaponDealerImg"
             android:background="@drawable/gun_rifle" />
 
         <TextView
+            android:id="@+id/weaponTxt2"
             style="@style/weaponDealerBtnTxt"
-            android:text="@string/hunting_rifle"
-            android:id="@+id/weaponTxt2" />
+            android:text="@string/hunting_rifle"/>
 
     </LinearLayout>
 
     <LinearLayout
-        style="@style/weaponDealerBtn"
         android:id="@+id/btn3"
-        android:layout_below="@+id/btn1"
+        style="@style/weaponDealerBtn"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/btn1">
 
         <ImageView
-            style="@style/weaponDealerImg"
             android:id="@+id/imageView3"
+            style="@style/weaponDealerImg"
             android:background="@drawable/gun_smg" />
 
         <TextView
+            android:id="@+id/weaponTxt3"
             style="@style/weaponDealerBtnTxt"
-            android:text="@string/smg"
-            android:id="@+id/weaponTxt3"/>
+            android:text="@string/smg"/>
 
     </LinearLayout>
 
     <LinearLayout
-        style="@style/weaponDealerBtn"
         android:id="@+id/btn4"
+        style="@style/weaponDealerBtn"
         android:layout_below="@+id/btn1"
-        android:layout_toRightOf="@+id/btn3"
-        android:layout_toEndOf="@+id/btn3">
+        android:layout_toEndOf="@+id/btn3"
+        android:layout_toRightOf="@+id/btn3">
 
         <ImageView
             android:id="@+id/imageView4"
@@ -80,174 +73,174 @@
             android:background="@drawable/gun_assault_rifle" />
 
         <TextView
+            android:id="@+id/weaponTxt4"
             style="@style/weaponDealerBtnTxt"
-            android:text="@string/assault_rifle"
-            android:id="@+id/weaponTxt4" />
+            android:text="@string/assault_rifle"/>
     </LinearLayout>
 
     <TextView
-        style="@style/weaponDealerHeadTxt"
-        android:text="@string/damage"
         android:id="@+id/textView11"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/btn3"
-        android:layout_alignLeft="@+id/btn3"
-        android:layout_alignStart="@+id/btn3"
-        android:layout_alignRight="@+id/btn3"
-        android:layout_alignEnd="@+id/btn3"
-        android:gravity="center"/>
-
-    <TextView
         style="@style/weaponDealerHeadTxt"
-        android:text="@string/accuracy"
-        android:id="@+id/textView12"
-        android:layout_alignTop="@+id/textView11"
-        android:layout_alignLeft="@+id/btn4"
-        android:layout_alignStart="@+id/btn4"
-        android:layout_alignRight="@+id/btn4"
-        android:layout_alignEnd="@+id/btn4"
-        android:gravity="center" />
+        android:layout_alignEnd="@+id/btn3"
+        android:layout_alignLeft="@+id/btn3"
+        android:layout_alignRight="@+id/btn3"
+        android:layout_alignStart="@+id/btn3"
+        android:layout_below="@+id/btn3"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/damage"/>
 
     <TextView
+        android:id="@+id/textView12"
+        style="@style/weaponDealerHeadTxt"
+        android:layout_alignEnd="@+id/btn4"
+        android:layout_alignLeft="@+id/btn4"
+        android:layout_alignRight="@+id/btn4"
+        android:layout_alignStart="@+id/btn4"
+        android:layout_alignTop="@+id/textView11"
+        android:gravity="center"
+        android:text="@string/accuracy"/>
+
+    <TextView
+        android:id="@+id/damageValTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
-        android:id="@+id/damageValTxt"
-        android:layout_below="@+id/textView11"
-        android:layout_alignRight="@+id/textView11"
         android:layout_alignEnd="@+id/textView11"
         android:layout_alignLeft="@+id/textView11"
+        android:layout_alignRight="@+id/textView11"
         android:layout_alignStart="@+id/textView11"
+        android:layout_below="@+id/textView11"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:layout_marginBottom="10dp" />
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/accuracyValTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
-        android:id="@+id/accuracyValTxt"
-        android:layout_alignTop="@+id/damageValTxt"
-        android:layout_alignRight="@+id/textView12"
         android:layout_alignEnd="@+id/textView12"
         android:layout_alignLeft="@+id/textView12"
+        android:layout_alignRight="@+id/textView12"
         android:layout_alignStart="@+id/textView12"
-        android:gravity="center" />
+        android:layout_alignTop="@+id/damageValTxt"
+        android:gravity="center"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/textView13"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/weapon"
-        android:id="@+id/textView13"
-        android:layout_below="@+id/textView14"
         android:layout_alignLeft="@+id/textView14"
         android:layout_alignStart="@+id/textView14"
-        style="@style/normalTxt" />
+        android:layout_below="@+id/textView14"
+        android:text="@string/weapon"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/buy"
         android:id="@+id/buyBtn"
-        android:layout_below="@+id/textView15"
-        android:layout_alignLeft="@+id/textView13"
-        android:layout_alignStart="@+id/textView14"
-        android:layout_marginTop="10dp"
-        android:layout_alignRight="@+id/damageValTxt"
-        android:layout_alignEnd="@+id/damageValTxt" />
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/leave"
+        android:layout_alignEnd="@+id/damageValTxt"
+        android:layout_alignLeft="@+id/textView13"
+        android:layout_alignRight="@+id/damageValTxt"
+        android:layout_alignStart="@+id/textView14"
+        android:layout_below="@+id/textView15"
+        android:layout_marginTop="10dp"
+        android:text="@string/buy"/>
+
+    <Button
         android:id="@+id/closeBtn"
-        android:layout_alignTop="@+id/buyBtn"
-        android:layout_alignRight="@+id/accuracyValTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/accuracyValTxt"
         android:layout_alignLeft="@+id/accuracyValTxt"
-        android:layout_alignStart="@+id/accuracyValTxt" />
+        android:layout_alignRight="@+id/accuracyValTxt"
+        android:layout_alignStart="@+id/accuracyValTxt"
+        android:layout_alignTop="@+id/buyBtn"
+        android:text="@string/leave"/>
 
     <TextView
+        android:id="@+id/textView14"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/cost"
-        android:id="@+id/textView14"
-        android:layout_below="@+id/damageValTxt"
         android:layout_alignLeft="@+id/damageValTxt"
         android:layout_alignStart="@+id/damageValTxt"
-        style="@style/normalTxt" />
+        android:layout_below="@+id/damageValTxt"
+        android:text="@string/cost"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
         android:id="@+id/costValTxt"
-        android:layout_above="@+id/selectedWeaponTxt"
-        android:layout_toRightOf="@+id/textView13"
-        android:layout_toEndOf="@+id/textView13"
-        android:layout_marginStart="50dp"
-        style="@style/normalTxt" />
-
-    <TextView
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="WP"
+        android:layout_above="@+id/selectedWeaponTxt"
+        android:layout_marginStart="50dp"
+        android:layout_toEndOf="@+id/textView13"
+        android:layout_toRightOf="@+id/textView13"
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
         android:id="@+id/selectedWeaponTxt"
-        android:layout_alignTop="@+id/textView13"
+        style="@style/normalTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/costValTxt"
         android:layout_alignStart="@+id/costValTxt"
-        style="@style/normalTxt" />
+        android:layout_alignTop="@+id/textView13"
+        android:text="WP"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/textView15"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/currentWpn"
-        android:id="@+id/textView15"
-        android:layout_below="@+id/textView16"
         android:layout_alignLeft="@+id/textView13"
         android:layout_alignStart="@+id/textView16"
-        style="@style/normalTxt" />
+        android:layout_below="@+id/textView16"
+        android:text="@string/currentWpn"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/currentWeaponTxt"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="WP"
-        android:id="@+id/currentWeaponTxt"
+        android:layout_alignLeft="@+id/textView15"
+        android:layout_alignStart="@id/selectedWeaponTxt"
+        android:layout_alignTop="@+id/textView15"
         android:layout_below="@+id/selectedWeaponTxt"
         android:layout_toRightOf="@+id/btn3"
-        android:layout_alignStart="@id/selectedWeaponTxt"
-        style="@style/normalTxt"
-        android:layout_alignLeft="@+id/textView15"
-        android:layout_alignTop="@+id/textView15" />
+        android:text="WP"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/textView16"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/currentCash"
-        android:id="@+id/textView16"
-        android:layout_below="@+id/textView13"
         android:layout_alignLeft="@+id/textView13"
         android:layout_alignStart="@+id/textView13"
+        android:layout_below="@+id/textView13"
         android:layout_marginTop="10dp"
-        style="@style/normalTxt" />
+        android:text="@string/currentCash"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
+        android:id="@+id/currentCashTxt"
+        style="@style/normalTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="0"
-        android:id="@+id/currentCashTxt"
         android:layout_above="@+id/currentWeaponTxt"
         android:layout_alignLeft="@+id/currentWeaponTxt"
         android:layout_alignStart="@+id/currentWeaponTxt"
-        style="@style/normalTxt" />
+        android:text="0"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
 </RelativeLayout>

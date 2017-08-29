@@ -1,71 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/drugDialogContents">
+              android:id="@+id/drugDialogContents"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
     <TextView
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/drugHeader"
-        style="@style/dialogTitle" />
-
-    <TextView
+        android:id="@+id/dialogDescription"
+        style="@style/drugDialogDesc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginStart="20dp"
         android:text="Medium Text"
-        android:id="@+id/drugDescription"
-        style="@style/drugDialogDesc" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <EditText
+        android:id="@+id/dialogEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/drugDialogField"
-        android:inputType="numberDecimal"
         android:digits="0123456789"
         android:ems="10"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:inputType="numberDecimal"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <RelativeLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/value"
             android:id="@+id/value"
             style="@style/value"
-            android:visibility="gone"
-            android:gravity="left"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"/>
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:id="@+id/buyValueTxt"
-            android:visibility="gone"
-            style="@style/value"
-            android:gravity="right"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:gravity="left"
+            android:text="@string/value"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/buyValueTxt"
+            style="@style/value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            android:layout_alignParentTop="true"
+            android:gravity="right"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <Button
+        android:id="@+id/buyBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/buy"
-        android:id="@+id/buyBtn"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:text="@string/buy"/>
 
 </LinearLayout>
