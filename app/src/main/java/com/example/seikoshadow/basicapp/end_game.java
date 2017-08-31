@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+
 public class end_game extends AppCompatActivity {
     int currentCash;
     int currentBank;
@@ -37,11 +38,23 @@ public class end_game extends AppCompatActivity {
         }
 
         scoreTxt.setText(String.valueOf(finalScore));
-
     }
 
     public void quitGame(View view) {
         Intent quit = new Intent(this, Menu.class);
         startActivity(quit);
+    }
+
+    public void submitScore(View view) {
+        Intent submitScore = new Intent(this, Menu.class);
+
+        Bundle extras = new Bundle();
+        extras.putInt("score", finalScore);
+
+        submitScore.putExtras(extras);
+        submitScore.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        startActivity(submitScore);
+        finish();
     }
 }

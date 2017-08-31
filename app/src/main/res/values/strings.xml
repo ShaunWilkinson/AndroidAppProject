@@ -5,6 +5,14 @@
 
     <string name="placeholder">Placeholder</string>
 
+    <string name="failedToConnect">Could not connect to Play games services, your highscore won\'t be saved</string>
+    <string name="signin_other_error">There was an issue with sign-in, please try again later</string>
+    <string name="signin_failure">Unable to sign in.</string>
+    <string name="submitScore">Submit High Score</string>
+    <string name="needToSignIn">You need to sign in to do this</string>
+    <string name="leaderboardBtn">High Scores</string>
+    <string name="submittedScore">Successfully uploaded your score</string>
+
     <string name="zero">0</string>
     <string name="welcomeString">You\'ve got a month to make as much cash as you can while staying one step ahead of police\, rival drug dealers and the loan shark who\'s loaned you some starting capital \n\n Can you do it\?</string>
     <string name="secondPage">secondPage Text</string>

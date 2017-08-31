@@ -56,7 +56,7 @@ public class GameView extends AppCompatActivity {
     int currentCashVal = 5000;
     int currentDebtVal = 5000;
     int currentBankVal = 0;
-    int currentDayVal = 1;
+    int currentDayVal = 29;
     int maxHealth = 100;
     int currentHealthVal = 100;
     int totalDaysVal = 30;

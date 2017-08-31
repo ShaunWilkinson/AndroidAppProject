@@ -50,4 +50,13 @@
         android:onClick="quitGame"
         android:text="@string/quit" />
 
+    <Button
+        android:id="@+id/submitScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/quitBtn"
+        android:layout_centerHorizontal="true"
+        android:onClick="submitScore"
+        android:text="@string/submitScore"/>
+
 </RelativeLayout>

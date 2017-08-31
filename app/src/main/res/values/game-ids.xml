@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Google Play game services IDs.
+Save this file as res/values/games-ids.xml in your project.
+-->
+<resources>
+    <!-- app_id -->
+    <string name="app_id" translatable="false">1029303180233</string>
+    <!-- package_name -->
+    <string name="package_name" translatable="false">com.apps.seikoshadow.ganglanddealer</string>
+    <!-- leaderboard Best Dealers in the World -->
+    <string name="leaderboard_best_dealers_in_the_world" translatable="false">CgkIybeAuvodEAIQAQ</string>
+</resources>
