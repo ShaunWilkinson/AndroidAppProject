@@ -39,15 +39,16 @@ import java.util.Random;
 // todo set up end game - Done
 // todo display buy value of drugs when selling - done
 // todo display drugs if holding but don't allow sell and remove value - done
-// todo after click buy in buy/sell then click out it will keep last value - clear value of alreadyBoughtOrSold
+// todo after click buy in buy/sell then click out it will keep last value - clear value of alreadyBoughtOrSold - done
 // todo make same drugs display after load - done
-// todo events
+// todo events - done
 // todo weapons and armour - Done
 //  todo got count of visible drugs, still need to be able to pick from just visible though as there's a bug where it can pick drugs which arent visible - Done
 // todo code up hospital properly
 // todo set all dialogs to use customDialog style
 
 public class GameView extends AppCompatActivity {
+
     public static final String SAVE_FILE = "saveFile";
     // Weapons
     public int currentWeapon = 1; // hands = 1, pistol = 2, rifle = 3, smg = 4, assRifle = 5
@@ -302,9 +303,9 @@ public class GameView extends AppCompatActivity {
 
                     dialogDescription.setText(getString(R.string.drugBoomDesc, drugName.getText().toString()));
                 } else {
-                    drugName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
-                    drugValueTxt.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
-                    dialogDescription.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorRed));
+                    drugName.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    drugValueTxt.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
+                    dialogDescription.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorAccent));
 
                     drugName.setTypeface(null, Typeface.BOLD);
                     drugValueTxt.setTypeface(null, Typeface.BOLD);
@@ -376,19 +377,24 @@ public class GameView extends AppCompatActivity {
         eventDialog.setCancelable(false);
         setDividerStyle(eventDialog);
 
+        Boolean playerAttackSuccess = false;
+
         // If player tries to run they miss an attack
         if (!triedToRun) {
             if(runHandler(eventDialog) == 1) {
                 return;
             } else {
-                playerAttack();
+                playerAttackSuccess = playerAttack();
             }
+        } else {
+            playerAttackSuccess = playerAttack();
         }
 
         // Initialise dialog contents
         TextView enemyHealthTxt = (TextView) dialogView.findViewById(R.id.currentEnemyHealthTxt);
         final TextView currentHealth = (TextView) dialogView.findViewById(R.id.currentHealthTxt);
         TextView enemyDialogDescription = (TextView) dialogView.findViewById(R.id.attackEnemyDescription);
+        TextView playerDialogDescription = (TextView) dialogView.findViewById(R.id.playerAttackDescription);
         Button firstBtn = (Button) dialogView.findViewById(R.id.button);
         Button secondBtn = (Button) dialogView.findViewById(R.id.button2);
 
@@ -401,7 +407,6 @@ public class GameView extends AppCompatActivity {
         setHealth();
 
         // Set values
-        Log.d("myapp", String.valueOf(currentHealthVal));
         currentHealth.setText(String.valueOf(currentHealthVal));
         enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
@@ -413,7 +418,8 @@ public class GameView extends AppCompatActivity {
             currentHealth.setText(String.valueOf(currentHealthVal));
             enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
-            setBattleDescription(playerDamaged, enemyDialogDescription, 3);
+            setEnemyAttackDescription(playerDamaged, enemyDialogDescription, 3);
+            setPlayerAttackDescription(playerDialogDescription, playerAttackSuccess, true);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
 
@@ -429,7 +435,8 @@ public class GameView extends AppCompatActivity {
             currentHealthVal = 0;
             currentHealth.setText(String.valueOf(currentHealthVal));
 
-            setBattleDescription(playerDamaged, enemyDialogDescription, 1);
+            setEnemyAttackDescription(playerDamaged, enemyDialogDescription, 1);
+            setPlayerAttackDescription(playerDialogDescription, playerAttackSuccess, true);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
 
@@ -450,7 +457,8 @@ public class GameView extends AppCompatActivity {
 
             enemyHealthTxt.setText(String.valueOf(enemiesHealth[selectedEnemyId]));
 
-            setBattleDescription(playerDamaged, enemyDialogDescription, 2);
+            setEnemyAttackDescription(playerDamaged, enemyDialogDescription, 2);
+            setPlayerAttackDescription(playerDialogDescription, playerAttackSuccess, true);
             firstBtn.setVisibility(View.GONE);
             secondBtn.setText(getString(R.string.ok));
 
@@ -461,7 +469,8 @@ public class GameView extends AppCompatActivity {
             });
 
         } else {
-            setBattleDescription(playerDamaged, enemyDialogDescription, 0);
+            setEnemyAttackDescription(playerDamaged, enemyDialogDescription, 0);
+            setPlayerAttackDescription(playerDialogDescription, playerAttackSuccess, false);
             firstBtn.setText(getString(R.string.fight));
             secondBtn.setText(getString(R.string.run));
 
@@ -527,7 +536,25 @@ public class GameView extends AppCompatActivity {
         return enemyDamaged;
     }
 
-    public void setBattleDescription(boolean playerDamaged, TextView dialogDescription, int playerOrEnemyDead) {
+    public void setPlayerAttackDescription(TextView dialogDescription, Boolean playerAttackSuccess, Boolean enemyDead) {
+        // type
+        // 0 Nobody dead
+        // 1 enemy Dead
+
+
+        if (enemyDead) {
+            dialogDescription.setVisibility(View.GONE);
+        } else {
+            if (playerAttackSuccess) {
+                String bodyPart = bodyParts[randomInt(0, bodyParts.length - 1)];
+                dialogDescription.setText(getString(R.string.playerAttackSuccess, enemyNames[selectedEnemyId], bodyPart));
+            } else {
+                dialogDescription.setText(getString(R.string.playerAttackFail, enemyNames[selectedEnemyId]));
+            }
+        }
+    }
+
+    public void setEnemyAttackDescription(boolean playerDamaged, TextView dialogDescription, int playerOrEnemyDead) {
         // playerOrEnemyDead
         // 0 Nobody dead
         // 1 Player Dead
@@ -770,6 +797,7 @@ public class GameView extends AppCompatActivity {
         if (getIntent() != null && getIntent().getExtras() != null) {
             // make sure it was load game and not a different intent
             if (getIntent().getExtras().getInt("loadGame") == 1) {
+
                 loadGame();
             } else {
                 // If intent was move then run setupMove
@@ -860,7 +888,6 @@ public class GameView extends AppCompatActivity {
 
     public void quitGame() {
         Intent quit = new Intent(this, Menu.class);
-        quit.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
         startActivity(quit);
 
@@ -870,6 +897,9 @@ public class GameView extends AppCompatActivity {
     public void loadGame() {
             //TODO load game logic
         SharedPreferences savePref = getSharedPreferences(SAVE_FILE, MODE_PRIVATE);
+
+        if (savePref.getInt("currentCash", -1) == -1)
+            return;
 
         currentCashVal = savePref.getInt("currentCash", -1);
         currentDebtVal = savePref.getInt("currentDebt", -1);
@@ -930,7 +960,7 @@ public class GameView extends AppCompatActivity {
     public void onBackPressed() {
         // Create a new alert
         final AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(getString(R.string.buyOrSell))
+                .setTitle(getString(R.string.saveOrQuit))
                 .create();
 
         // use drug_dialog layout for dialog contents
@@ -1416,6 +1446,34 @@ public class GameView extends AppCompatActivity {
                     dialogQuantity.setText(String.valueOf(currentDebtVal));
                 }
 
+                dialogQuantity.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        int maxQuantity = currentDebtVal;
+
+                        if (!dialogQuantity.getText().toString().matches("")) {
+                            if (Integer.valueOf(dialogQuantity.getText().toString()) > maxQuantity)
+                                dialogQuantity.setText(String.valueOf(maxQuantity));
+
+                            if (Integer.valueOf(dialogQuantity.getText().toString()) > currentCashVal)
+                                dialogQuantity.setText(String.valueOf(currentCashVal));
+                        } else {
+                            dialogQuantity.setText(String.valueOf(0));
+                        }
+                    }
+
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        // TODO Auto-generated method stub
+                    }
+                });
+
+
                 // Handles what happens when the user clicks pay
                 dialogButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
@@ -1482,9 +1540,85 @@ public class GameView extends AppCompatActivity {
 
     private void hospitalHandler() {
         if (currentHealthVal != 100) {
+            // TODO finish hospital
 
-            hospitalDialog dialog = new hospitalDialog(this, R.style.Theme_AppTheme);
-            dialog.handleDialog();
+            //hospitalDialog dialog = new hospitalDialog(this);
+            //dialog.handleDialog();
+
+            final View dialogView = View.inflate(this, R.layout.drug_dialog, null);
+            final AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.hospitalTitle))
+                    .setView(dialogView)
+                    .create();
+            dialog.show();
+            setDividerStyle(dialog);
+
+            TextView description = (TextView) dialog.findViewById(R.id.dialogDescription);
+            final TextView valueTxt = (TextView) dialog.findViewById(R.id.buyValueTxt);
+            final EditText input = (EditText) dialog.findViewById(R.id.dialogEditText);
+            Button dialogBtn = (Button) dialog.findViewById(R.id.buyBtn);
+
+            description.setText(getString(R.string.hospitalDescription));
+
+            int maxHealthPurchase = (maxHealth - currentHealthVal);
+            if (currentCashVal < (maxHealthPurchase * hospitalCost))
+                maxHealthPurchase = currentCashVal / hospitalCost;
+
+            String valueString = getString(R.string.cost) + " " + getString(R.string.currency) + String.valueOf(maxHealthPurchase * 100);
+            valueTxt.setText(valueString);
+            valueTxt.setVisibility(View.VISIBLE);
+
+            input.setText(String.valueOf(maxHealthPurchase));
+
+            input.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    if (!input.getText().toString().matches("")) {
+                        if (Integer.valueOf(input.getText().toString()) > maxHealth)
+                            input.setText(String.valueOf(maxHealth));
+
+                        int quantity = Integer.parseInt(input.getText().toString());
+                        int cost = quantity * hospitalCost;
+
+                        valueTxt.setText(getString(R.string.cost) + " " + getString(R.string.currency) + String.valueOf(cost));
+                    } else {
+                        valueTxt.setText(getString(R.string.cost) + " " + getString(R.string.currency) + String.valueOf(0));
+                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO Auto-generated method stub
+                }
+            });
+
+            dialogBtn.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    int quantity = Integer.parseInt(input.getText().toString());
+                    int cost = quantity * hospitalCost;
+                    int maximumHealthPurchase = currentCashVal / (quantity * cost);
+
+                    // if selected quantity would cost more than current cash then set to max value
+                    if (cost > currentCashVal) {
+                        quantity = (currentCashVal / hospitalCost);
+                    }
+                    cost = quantity * hospitalCost;
+                    currentCashVal -= cost;
+                    currentHealthVal += quantity;
+                    dialog.dismiss();
+
+                    TextView currentCash = (TextView) findViewById(R.id.currentCashView);
+                    currentCash.setText(String.valueOf(currentCashVal));
+
+                    setHealth();
+                }
+            });
 
         } else {
             Toast.makeText(getApplicationContext(), getString(R.string.noNeedOfHospital), Toast.LENGTH_LONG).show();
@@ -1717,7 +1851,7 @@ public class GameView extends AppCompatActivity {
         // Define the linearlayout of the drug dialog
         LinearLayout drugDialogContents = (LinearLayout) v.findViewById(R.id.drugDialogContents);
         TextView currentDrugDescTxt = (TextView) drugDialogContents.findViewById(R.id.dialogDescription);
-        TextView buyValueTxt = (TextView) drugDialogContents.findViewById(R.id.buyValueTxt);
+        final TextView buyValueTxt = (TextView) drugDialogContents.findViewById(R.id.buyValueTxt);
 
         TextView currentTableRowValue = (TextView) currentTableRow.getChildAt(2);
         currentDrugVal = Integer.parseInt(currentTableRowValue.getText().toString());
@@ -1836,11 +1970,76 @@ public class GameView extends AppCompatActivity {
         if (totalCurrentDrugHeldVal > 0 && maxDrugsPurchasableNum == 0 || totalItemsHeld == maxDrugs && totalCurrentDrugHeldVal > 0) {
             buySellQuantity.setText(String.valueOf(totalCurrentDrugHeldVal));
             confirmButtonTxt = getString(R.string.sell);
+
+            final TextView value = (TextView) dialog.findViewById(R.id.value);
+
+            // If value in quantity field changes
+            buySellQuantity.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //Do your stuff
+                    String input = buySellQuantity.getText().toString();
+
+                    if (!input.matches("")) {
+                        if (Integer.parseInt(input) > totalCurrentDrugHeldVal)
+                            buySellQuantity.setText(String.valueOf(totalCurrentDrugHeldVal));
+
+                    } else {
+                        buySellQuantity.setText(String.valueOf(0));
+                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO Auto-generated method stub
+                }
+            });
         }
         // If no drugs held and can afford some
         if (totalCurrentDrugHeldVal == 0 && maxDrugsPurchasableNum > 0) {
             buySellQuantity.setText(String.valueOf(maxDrugsPurchasableNum));
             confirmButtonTxt = getString(R.string.buy);
+
+            final TextView value = (TextView) dialog.findViewById(R.id.value);
+
+            // If value in quantity field changes
+            buySellQuantity.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //Do your stuff
+                    String input = buySellQuantity.getText().toString();
+
+                    if (!input.matches("")) {
+                        inputDrugQuantity = Integer.parseInt(buySellQuantity.getText().toString());
+                        int maxQuantity = currentCashVal / currentDrugVal;
+
+                        //value.setText(getString(R.string.totalValue, getString(R.string.value), String.valueOf(totalValue)));
+                        if (Integer.parseInt(input) > maxQuantity)
+                            buySellQuantity.setText(String.valueOf(maxQuantity));
+
+                        int totalValue = currentDrugVal * Integer.parseInt(input);
+                        buyValueTxt.setText(getString(R.string.value) + " " + String.valueOf(totalValue));
+
+                    } else {
+                        buyValueTxt.setText(getString(R.string.totalValue, getString(R.string.value), "0"));
+                    }
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                    // TODO Auto-generated method stub
+                }
+            });
         }
         // If holding drugs and have enough money to buy more
         if (totalCurrentDrugHeldVal > 0 && maxDrugsPurchasableNum > 0 && !alreadyBoughtOrSold) {
@@ -1907,34 +2106,6 @@ public class GameView extends AppCompatActivity {
             value.setText(getString(R.string.value) + " " + String.valueOf(totalValue));
             value.setVisibility(View.VISIBLE);
         }
-
-        // If value in quantity field changes
-        buySellQuantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //Do your stuff
-                String input = buySellQuantity.getText().toString();
-
-                if(!input.matches("")) {
-                    inputDrugQuantity = Integer.parseInt(buySellQuantity.getText().toString());
-                    int totalValue = currentDrugVal * inputDrugQuantity;
-
-                    value.setText(getString(R.string.totalValue, getString(R.string.value), String.valueOf(totalValue)));
-                } else {
-                    value.setText(getString(R.string.totalValue, getString(R.string.value), "0"));
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // TODO Auto-generated method stub
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // TODO Auto-generated method stub
-            }
-        });
 
         buyButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

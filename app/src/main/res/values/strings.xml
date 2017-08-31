@@ -33,6 +33,11 @@
     <string name="quit">Quit</string>
     <string name="load_game">Load Game</string>
     <string name="leave">Leave</string>
+    <string name="saveOrQuit">Save or Quit\?</string>
+    <string name="options">Options</string>
+
+    <!-- CRash Strings -->
+    <string name="crash_toast_text">The App Crashed - Please email me a report</string>
 
     <!-- ============ END GAME ========== -->
     <string name="finish">Finish</string>
@@ -155,6 +160,10 @@
     <string name="policeKilledPlayer">As you fall to the floor\, you\'re quickly handcuffed and sent to jail</string>
     <string name="drugDealerKilledPlayer">As the drug dealer stabs you again you feel yourself losing consciousness&#8230;</string>
     <string name="officerKilledPlayer">You feel a dull thud in your %1$s and suddenly you fall to the ground in a heap&#8230;</string>
+
+    <string name="playerAttackSuccess">You manage to hit the %1$s in the %2$s&#8230;</string>
+    <string name="playerAttackFail">You miss the %1$s&#8230;</string>
+    <string name="enemyDead">You hit the %1$s in the %2$s\, dropping him to the floor&#8230;</string>
 
     <string name="policeDead">The police officer takes a hard hit and falls to the ground&#8230;</string>
     <string name="drugDealerDead">The dealer falls to the floor dead&#8230;</string>

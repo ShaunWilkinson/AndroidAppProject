@@ -1,6 +1,6 @@
 package com.example.seikoshadow.basicapp;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.View;
 import android.widget.EditText;
@@ -10,13 +10,13 @@ import android.widget.TextView;
  * Created by Shaun on 27/08/2017.
  */
 
-public class hospitalDialog extends Dialog implements View.OnClickListener {
+public class hospitalDialog extends AlertDialog implements View.OnClickListener {
     Context mContext;
     private int currentHealthVal;
     private int maxHealth;
 
-    protected hospitalDialog(Context context, int theme) {
-        super(context, theme);
+    protected hospitalDialog(Context context) {
+        super(context);
         this.mContext = context;
     }
 
@@ -36,12 +36,8 @@ public class hospitalDialog extends Dialog implements View.OnClickListener {
         this.maxHealth = maxHealth;
     }
 
-    public boolean TouchEvent(int actionOutside) {
-        return false;
-    }
-
     public void handleDialog() {
-        hospitalDialog dialog = new hospitalDialog(mContext, R.style.Theme_AppTheme);
+        hospitalDialog dialog = new hospitalDialog(mContext);
         dialog.setTitle(mContext.getResources().getString(R.string.hospitalTitle));
         dialog.setContentView(R.layout.drug_dialog);
         dialog.setCancelable(true);
