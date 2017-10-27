@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/firstCity"
         android:id="@+id/firstCityBtn"
-        android:onClick="citySelected"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/secondCity"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:onClick="citySelected"
+        android:text="@string/firstCity"/>
+
+    <Button
         android:id="@+id/secondCityBtn"
-        android:onClick="citySelected"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/thirdCity"
+        android:layout_gravity="center_horizontal"
+        android:onClick="citySelected"
+        android:text="@string/secondCity"/>
+
+    <Button
         android:id="@+id/thirdCityBtn"
-        android:onClick="citySelected"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fourthCity"
+        android:layout_gravity="center_horizontal"
+        android:onClick="citySelected"
+        android:text="@string/thirdCity"/>
+
+    <Button
         android:id="@+id/fourthCityBtn"
-        android:onClick="citySelected"
-        android:layout_gravity="center_horizontal" />
-
-    <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fifthCity"
-        android:id="@+id/fifthCityBtn"
+        android:layout_gravity="center_horizontal"
         android:onClick="citySelected"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/fourthCity"/>
+
+    <Button
+        android:id="@+id/fifthCityBtn"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:onClick="citySelected"
+        android:text="@string/fifthCity"/>
 </LinearLayout>

@@ -8,8 +8,7 @@
 
     <LinearLayout
         android:id="@+id/btn1"
-        style="@style/weaponDealerBtn"
-        android:layout_below="@+id/weaponDealerTitle">
+        style="@style/weaponDealerBtn">
 
         <ImageView
             android:id="@+id/imageView"
@@ -25,7 +24,6 @@
     <LinearLayout
         android:id="@+id/btn2"
         style="@style/weaponDealerBtn"
-        android:layout_below="@+id/weaponDealerTitle"
         android:layout_toEndOf="@+id/btn1"
         android:layout_toRightOf="@+id/btn1">
 

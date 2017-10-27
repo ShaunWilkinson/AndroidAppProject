@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/changeLogTitle"
+        style="@style/cityHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/changeLogTitle"
+        android:textAlignment="center"
+        android:textSize="24sp"/>
+
+    <TextView
+        android:id="@+id/textView24"
+        style="@style/changeLogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="v1.0 - Initial public release"/>
+
+    <TextView
+        android:id="@+id/textView25"
+        style="@style/changeLogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="I\'m now happy to release this to the public in a Beta phase"/>
+
+    <TextView
+        android:id="@+id/textView19"
+        style="@style/changeLogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="v0.3 - Bug Fixing"/>
+
+    <TextView
+        android:id="@+id/textView21"
+        style="@style/changeLogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fixed buy\/sell logic to not show buy or sell dialog in certain conditions"/>
+
+    <TextView
+        android:id="@+id/textView18"
+        style="@style/changeLogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="v0.2 - Bug Fixing"/>
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/changeLogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fixed duplicate dialog issue.\nFixed display issues.\nStandardised colours throughout.\nStandardised dialogs throughout."/>
+
+    <TextView
+        android:id="@+id/textView23"
+        style="@style/changeLogHead"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="v0.1 - Initial test release"/>
+
+    <TextView
+        android:id="@+id/textView22"
+        style="@style/changeLogText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Finished all initial functionality and implemented Google sign in and High Scores"/>
+</LinearLayout>

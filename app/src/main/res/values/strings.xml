@@ -2,8 +2,26 @@
 
 <resources>
     <string name="app_name">Gangland Dealer</string>
+    <string name="menuTitle">Gangland\nDealer</string>
 
     <string name="placeholder">Placeholder</string>
+
+    <!--
+        GOOGLE ADS
+    -->
+    <string name="bannerUnitId">ca-app-pub-9371752022465917/7431753451</string>
+    <!--
+    real -  ca-app-pub-9371752022465917/7431753451
+    test -  ca-app-pub-3940256099942544/6300978111 -->
+    <string name="fullScreenUnitId">ca-app-pub-9371752022465917/7923558107</string>
+    <!--
+    real -  ca-app-pub-9371752022465917/7923558107
+    test -  ca-app-pub-3940256099942544/1033173712 -->
+
+
+    <!--
+        Google play
+        -->
 
     <string name="failedToConnect">Could not connect to Play games services, your highscore won\'t be saved</string>
     <string name="signin_other_error">There was an issue with sign-in, please try again later</string>
@@ -12,9 +30,11 @@
     <string name="needToSignIn">You need to sign in to do this</string>
     <string name="leaderboardBtn">High Scores</string>
     <string name="submittedScore">Successfully uploaded your score</string>
+    <string name="signOut">Sign Out</string>
+    <string name="help">Help</string>
 
     <string name="zero">0</string>
-    <string name="welcomeString">You\'ve got a month to make as much cash as you can while staying one step ahead of police\, rival drug dealers and the loan shark who\'s loaned you some starting capital \n\n Can you do it\?</string>
+    <string name="welcomeString">You\'ve got a month to make as much cash as you can while staying one step ahead of police\, rival drug dealers and the loan shark who\'s loaned you some starting capital \n\n Can you do it\?ddddddddddddddddddddddddddddddddddddddd dsdasds sdasdddasd asd</string>
     <string name="secondPage">secondPage Text</string>
     <string name="cash">Cash</string>
     <string name="new_game">New Game</string>
@@ -23,7 +43,7 @@
     <string name="currency">£</string>
     <string name="currencyQuantity">&currency;%1$s</string>
     <string name="divisor">/</string>
-    <string name="maxDrugs">100</string>
+    <string name="maxDrugs">100 Held</string>
     <string name="payDebt">Pay Debt</string>
     <string name="move">Move</string>
     <string name="drugs">Drugs</string>
@@ -44,19 +64,26 @@
     <string name="saveOrQuit">Save or Quit\?</string>
     <string name="options">Options</string>
 
+    <string name="changeLogTitle">Change Log</string>
+
     <!-- CRash Strings -->
     <string name="crash_toast_text">The App Crashed - Please email me a report</string>
 
     <!-- ============ END GAME ========== -->
     <string name="finish">Finish</string>
     <string name="endGameTxt1">Yay you\'ve not died!</string>
-    <string name="inDebt">As the loan shark\'s men batter down your door you can\'t help but wonder where you went wrong.</string>
+    <string name="inDebt">As the loan shark\'s men batter down your door you can\'t help but wonder where you went wrong</string>
+    <string name="subTenK">You\'ve made enough to survive&#8230;\nbut for how long&#8230;</string>
+    <string name="subFiftyK">You\'ve definitely made enough to live\, but not enough live long</string>
+    <string name="subHundredK">You\'ve made enough to retire in India</string>
+    <string name="subFiveHundredK">You\'ve made enough to retire to Bulgaria</string>
+    <string name="endGameLast">With your ill gotten gains you manage to retire to a private island in the Bahamas</string>
     <string name="score">Final Score</string>
 
     <!-- ============= DRUGS =============  -->
     <string name="drug1">Acid</string>
     <string name="drug2">Cocaine</string>
-    <string name="drug3">Ecstacy</string>
+    <string name="drug3">Ecstasy</string>
     <string name="drug4">Hashish</string>
     <string name="drug5">Heroin</string>
     <string name="drug6">Ketamine</string>
@@ -145,7 +172,7 @@
     <string name="drugBoom">Price Boom</string>
     <string name="drugBoomDesc">There\'s a severe shortage of %1$s which has made the price skyrocket</string>
     <string name="drugBust">Price Bust</string>
-    <string name="drugBustDesc">Cheap %1$s has flooded the market making %2$s worthless</string>
+    <string name="drugBustDesc">Cheap %1$s have flooded the market making %2$s worthless</string>
 
     <string name="attackTitle">Attacked</string>
     <string name="attackStart">As you walk around a corner you\'re confronted by a %1$s.</string>
